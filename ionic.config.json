@@ -1,0 +1,7 @@
+{
+  "name": "movielist",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
