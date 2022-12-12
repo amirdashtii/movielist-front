@@ -12,6 +12,9 @@ import Activate from "./containers/Activate";
 import ResetPassword from "./containers/ResetPassword";
 import ResetPasswordConfirm from "./containers/ResetPasswordConfirm";
 
+import { Provider } from "react-redux";
+import store from "./store";
+
 import Layout from "./hocs/Layout";
 
 // import {
@@ -52,45 +55,51 @@ import Layout from "./hocs/Layout";
 // setupIonicReact();
 
 const App: React.FC = () => (
-  <Router>
-    <Layout>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/signup" component={Signup} />
-        <Route exact path="/reset-password" component={ResetPassword} />
-        <Route exact path="/password/reset/confirm/:uid/:token" component={ResetPasswordConfirm} />
-        <Route exact path="/activate/:uid/:token" component={Activate} />
-      </Switch>
-    </Layout>
-  </Router>
+  <Provider store={store}>
+    <Router>
+      <Layout>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/signup" component={Signup} />
+          <Route exact path="/reset-password" component={ResetPassword} />
+          <Route
+            exact
+            path="/password/reset/confirm/:uid/:token"
+            component={ResetPasswordConfirm}
+          />
+          <Route exact path="/activation/:uid/:token" component={Activate} />
+        </Switch>
+      </Layout>
+    </Router>
+  </Provider>
   // <IonApp>
   //   <IonReactRouter>
   //     <IonTabs>
   //       <IonRouterOutlet>
-  //         <Route exact path="/tab1">
+  //         <Route exact path='/tab1'>
   //           <Tab1 />
   //         </Route>
-  //         <Route exact path="/tab2">
+  //         <Route exact path='/tab2'>
   //           <Tab2 />
   //         </Route>
-  //         <Route path="/tab3">
+  //         <Route path='/tab3'>
   //           <Tab3 />
   //         </Route>
-  //         <Route exact path="/">
-  //           <Redirect to="/tab1" />
+  //         <Route exact path='/'>
+  //           <Redirect to='/tab1' />
   //         </Route>
   //       </IonRouterOutlet>
-  //       <IonTabBar slot="bottom">
-  //         <IonTabButton tab="tab1" href="/tab1">
+  //       <IonTabBar slot='bottom'>
+  //         <IonTabButton tab='tab1' href='/tab1'>
   //           <IonIcon icon={triangle} />
   //           <IonLabel>Tab 1</IonLabel>
   //         </IonTabButton>
-  //         <IonTabButton tab="tab2" href="/tab2">
+  //         <IonTabButton tab='tab2' href='/tab2'>
   //           <IonIcon icon={ellipse} />
   //           <IonLabel>Tab 2</IonLabel>
   //         </IonTabButton>
-  //         <IonTabButton tab="tab3" href="/tab3">
+  //         <IonTabButton tab='tab3' href='/tab3'>
   //           <IonIcon icon={square} />
   //           <IonLabel>Tab 3</IonLabel>
   //         </IonTabButton>
