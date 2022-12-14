@@ -14,8 +14,76 @@ import {
   SIGNUP_FAIL,
   ACTIVATION_SUCCESS,
   ACTIVATION_FAIL,
+  GOOGLE_AUTH_SUCCESS,
+  GOOGLE_AUTH_FAIL,
   LOGOUT,
 } from "./types";
+
+export const load_user = () => async (dispatch: any) => {
+  if (localStorage.getItem("access")) {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${localStorage.getItem("access")}`,
+        Accept: "application/json",
+      },
+    };
+
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/auth/users/me/`,
+        config
+      );
+
+      dispatch({
+        type: USER_LOADED_SUCCESS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: USER_LOADED_FAIL,
+      });
+    }
+  } else {
+    dispatch({
+      type: USER_LOADED_FAIL,
+    });
+  }
+};
+
+
+export const googleAuthenticate = (state: any, code: any) => async (dispatch: any) => {
+  if (state && code && !localStorage.getItem('access')) {
+    const config = {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    };
+    const details = {
+      'state': state,
+      'code': code,
+    };
+
+    const formBody = Object.keys(details).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key as keyof typeof details])).join('&');
+
+
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/o/google-oauth2/?${formBody}`, config);
+
+      dispatch({
+        type: GOOGLE_AUTH_SUCCESS,
+        payload: res.data
+      });
+      
+      dispatch(load_user());
+    } catch (err) {
+      dispatch({
+        type: GOOGLE_AUTH_FAIL,
+      });
+      
+    }
+  }
+}
 
 export const checkAuthenticated = () => async (dispatch: any) => {
   if (localStorage.getItem("access")) {
@@ -56,37 +124,7 @@ export const checkAuthenticated = () => async (dispatch: any) => {
   }
 };
 
-export const load_user = () => async (dispatch: any) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
 
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/auth/users/me/`,
-        config
-      );
-
-      dispatch({
-        type: USER_LOADED_SUCCESS,
-        payload: res.data,
-      });
-    } catch (err) {
-      dispatch({
-        type: USER_LOADED_FAIL,
-      });
-    }
-  } else {
-    dispatch({
-      type: USER_LOADED_FAIL,
-    });
-  }
-};
 
 export const login =
   (username: any, password: any) => async (dispatch: any) => {
