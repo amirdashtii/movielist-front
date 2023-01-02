@@ -1,0 +1,7 @@
+{
+  "name": "movielist-front",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
