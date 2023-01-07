@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../guards/auth.guard';
 import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
           import('../tab-list/tab-list.module').then(
             (m) => m.TabListPageModule
           ),
+          canLoad: [AuthGuard]
       },
       {
         path: 'tab-search',
@@ -20,6 +22,7 @@ const routes: Routes = [
           import('../tab-search/tab-search.module').then(
             (m) => m.TabSearchPageModule
           ),
+          canLoad: [AuthGuard]
       },
       {
         path: 'tab-profile',
@@ -27,6 +30,7 @@ const routes: Routes = [
           import('../tab-profile/tab-profile.module').then(
             (m) => m.TabProfilePageModule
           ),
+          canLoad: [AuthGuard]
       },
       {
         path: '',
