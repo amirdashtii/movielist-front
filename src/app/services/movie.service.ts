@@ -66,6 +66,10 @@ export class MovieService {
     const url = this.url + `/storage/lists/${id}/items/?page=${page}`;
     return this.http.get<namespace.RootObject>(url);
   }
+  getMovieDetails(id: string):Observable<namespace.RootObject> {
+    const url = this.url + `/storage/movies/${id}`;
+    return this.http.get<namespace.RootObject>(url);
+  }
   createNweList(credentials: {name, description}) {
     return this.http.post(`${this.url}/storage/lists/`, credentials);
 

@@ -29,10 +29,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/create-new-list/create-new-list.module').then( m => m.CreateNewListPageModule),
     canLoad: [AuthGuard],
   },
-  // {
-  //   path: 'list-detail',
-  //   loadChildren: () => import('./pages/list-detail/list-detail.module').then( m => m.ListDetailPageModule)
-  // },
 ];
 @NgModule({
   imports: [

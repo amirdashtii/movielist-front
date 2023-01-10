@@ -9,7 +9,7 @@
 
 <ion-content>
   <ion-list>
-    <ion-item button *ngFor="let item of listitems">
+    <ion-item button *ngFor="let item of listitems" [routerLink]="['./items',item.movie.id]">
       <ion-thumbnail slot="start">
         <img src="{{item.movie.poster}}">
       </ion-thumbnail>

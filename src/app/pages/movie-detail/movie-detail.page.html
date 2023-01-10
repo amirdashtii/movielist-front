@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ movie?.title }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab-list"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="movie">
+  <ion-card>
+    <img src="{{movie.poster}}" />
+    <ion-card-header>
+      <ion-card-title>{{ movie.title }}</ion-card-title>
+      <ion-card-subtitle *ngFor="let d of movie.director; let isLast = last">
+        {{d}}{{!isLast ? '.' : ''}}
+      </ion-card-subtitle>
+      <span *ngFor="let a of movie.actors; let isLast = last">
+        {{a}}{{!isLast ? ',' : ''}}
+      </span>
+    </ion-card-header>
+    <ion-item lines="none">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+       <ion-label>{{ movie.released }}</ion-label> <!--| date:'y'-->
+    </ion-item>
+    <ion-card-content>
+      
+      <ion-label color="medium">{{ movie.plot }}</ion-label>
+
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

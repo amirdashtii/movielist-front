@@ -22,7 +22,7 @@
     <ion-item>
       <ion-slides [options]="opts">
         <ion-slide *ngFor="let item of list.items">
-          <ion-card>
+          <ion-card button="true" href="/tabs/tab-list/{{list.id}}/items/{{item.movie.id}}">
             <img src="{{item.movie.poster}}" />
             <ion-card-header>
               <ion-card-title>{{item.movie.title}}</ion-card-title>
