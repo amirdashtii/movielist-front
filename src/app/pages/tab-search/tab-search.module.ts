@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TabSearchPage } from './tab-search.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { ExploreContainerComponentModule } from 'src/app/explore-container/explore-container.module';
 
 import { TabSearchPageRoutingModule } from './tab-search-routing.module';
 

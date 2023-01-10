@@ -10,11 +10,13 @@
 <ion-content>
   <ion-list>
     <ion-item button *ngFor="let item of listitems">
-      <ion-avatar slot="start">
+      <ion-thumbnail slot="start">
         <img src="{{item.movie.poster}}">
-      </ion-avatar>
+      </ion-thumbnail>
       <ion-label>
         {{ item.movie.title }}
+        <p>{{item.movie.year}}</p>
+        <p>{{item.movie.director}}</p>
       </ion-label>
       <ion-badge slot="end">{{item.movie.imdbrating}}</ion-badge>
 

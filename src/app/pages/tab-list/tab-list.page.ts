@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { CreateNewListPage } from '../pages/create-new-list/create-new-list.page';
-import { ApiService } from '../services/api.service';
-import { MovieService } from '../services/movie.service';
+import { CreateNewListPage } from '../create-new-list/create-new-list.page';
+import { ApiService } from '../../services/api.service';
+import { MovieService } from '../../services/movie.service';
 
 @Component({
   selector: 'app-tab-list',

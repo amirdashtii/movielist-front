@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TabProfilePage } from './tab-profile.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
-
+import { ExploreContainerComponentModule } from 'src/app/explore-container/explore-container.module';
 import { TabProfilePageRoutingModule } from './tab-profile-routing.module';
 
 @NgModule({
