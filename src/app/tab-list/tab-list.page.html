@@ -1,14 +1,41 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Tab List </ion-title>
+    <ion-title> List </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab List</ion-title>
+      <ion-title size="large">My Lists</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <ion-list *ngFor="let list of lists" class="ion-padding">
+    <ion-list-header>
+      <ion-label class="section-title">
+        <h1>{{ list.name }}</h1>
+        <p>{{ list.total_movie }}</p>
+      </ion-label>
+      <ion-button [routerLink]="[list.id]">See All</ion-button>
+    </ion-list-header>
+    <ion-item>
+      <ion-slides [options]="opts">
+        <ion-slide *ngFor="let item of list.items">
+          <ion-card>
+            <img src="{{item.movie.poster}}" />
+            <ion-card-header>
+              <ion-card-title>{{item.movie.title}}</ion-card-title>
+              <ion-card-subtitle>{{item.movie.imdbrating}}</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-slide>
+      </ion-slides>
+    </ion-item>
+  </ion-list>
 </ion-content>
+<ion-fab vertical="bottom" horizontal="end">
+  <ion-fab-button size="small" (click)="openModal()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-tab-profile',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['tab-profile.page.scss'],
 })
 export class TabProfilePage {
-  constructor() {}
+  constructor(private apiService: ApiService) { }
+  logout() {
+    this.apiService.logout();
+  }
 }

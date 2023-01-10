@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ list?.name }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab-list"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item button *ngFor="let item of listitems">
+      <ion-avatar slot="start">
+        <img src="{{item.movie.poster}}">
+      </ion-avatar>
+      <ion-label>
+        {{ item.movie.title }}
+      </ion-label>
+      <ion-badge slot="end">{{item.movie.imdbrating}}</ion-badge>
+
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)" >
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data..." ></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

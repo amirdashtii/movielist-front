@@ -1,15 +1,19 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title> Tab Profile </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Tab Profile</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab Profile</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab Profile page"></app-explore-container>
+<ion-content>
+  <!-- <ion-button expand="full" (click)="getData()">Get data</ion-button> -->
+  <ion-card>
+    <ion-card-content>
+      <!-- {{ secretData }} -->
+    </ion-card-content>
+  </ion-card>
 </ion-content>

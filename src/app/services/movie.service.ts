@@ -1,35 +1,73 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import {Storage} from '@ionic/storage';
+import { Preferences } from '@capacitor/preferences';
+import { ApiService } from './api.service';
 
+declare module namespace {
 
-export interface ApiResult {
-  page: number;
-  results: any[];
-  total_pages: number;
-  total_results: number;
+  export interface Movie {
+      id: number;
+      title: string;
+      year: string;
+      actors: string[];
+      director: string[];
+      writer: string[];
+      orginal_title?: any;
+      rated: string;
+      released: string;
+      runtime: string;
+      genre: string;
+      plot: string;
+      language: string;
+      country: string;
+      awards: string;
+      poster: string;
+      metascore: string;
+      imdbrating: number;
+      imdbid: string;
+      type: string;
+  }
+
+  export interface Result {
+      id: number;
+      movie: Movie;
+  }
+
+  export interface RootObject {
+      count: number;
+      next: string;
+      previous?: any;
+      results: Result[];
+  }
+
 }
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class MovieService {
-  constructor(private http: HttpClient) {}
+  url = environment.baseUrl;
 
-  getMoviesList(): Observable<any> {
-    const url = environment.baseUrl + '/storage/movies';
-    // const params = {
-    //   grant_type: 'password',
-    //   client_id: environment.client_id,
-    //   client_secret: environment.client_secret,
-    //   'username': username,
-    //   'password': password,
-    //   scope: '*'
-    // };
+  constructor(private apiService: ApiService, private http: HttpClient) {}
+
+  getList(): Observable<any> {
+    const url = this.url + '/storage/lists/';
     return this.http.get(url);
   }
 
-  getMovieDetails() {}
+  getListDetails(id: string) {
+    const url = this.url + `/storage/lists/${id}/`;
+    return this.http.get(url);
+  }
+  getListItemDetails(id: string, page = 1):Observable<namespace.RootObject> {
+    const url = this.url + `/storage/lists/${id}/items/?page=${page}`;
+    return this.http.get<namespace.RootObject>(url);
+  }
+  createNweList(credentials: {name, description}) {
+    return this.http.post(`${this.url}/storage/lists/`, credentials);
+
+  }
 }

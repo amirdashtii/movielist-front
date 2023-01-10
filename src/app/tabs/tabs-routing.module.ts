@@ -14,7 +14,15 @@ const routes: Routes = [
           import('../tab-list/tab-list.module').then(
             (m) => m.TabListPageModule
           ),
-          canLoad: [AuthGuard]
+        canLoad: [AuthGuard],
+      },
+      {
+        path: 'tab-list/:id',
+        loadChildren: () =>
+        import('../pages/list-detail/list-detail.module').then(
+          (m) => m.ListDetailPageModule
+          ),
+          canLoad: [AuthGuard],
       },
       {
         path: 'tab-search',
@@ -22,7 +30,7 @@ const routes: Routes = [
           import('../tab-search/tab-search.module').then(
             (m) => m.TabSearchPageModule
           ),
-          canLoad: [AuthGuard]
+        canLoad: [AuthGuard],
       },
       {
         path: 'tab-profile',
@@ -30,7 +38,7 @@ const routes: Routes = [
           import('../tab-profile/tab-profile.module').then(
             (m) => m.TabProfilePageModule
           ),
-          canLoad: [AuthGuard]
+        canLoad: [AuthGuard],
       },
       {
         path: '',
