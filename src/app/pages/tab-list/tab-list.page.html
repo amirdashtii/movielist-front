@@ -24,10 +24,6 @@
         <ion-slide *ngFor="let item of list.items">
           <ion-card button="true" href="/tabs/tab-list/{{list.id}}/items/{{item.movie.id}}">
             <img src="{{item.movie.poster}}" />
-            <ion-card-header>
-              <ion-card-title>{{item.movie.title}}</ion-card-title>
-              <ion-card-subtitle>{{item.movie.imdbrating}}</ion-card-subtitle>
-            </ion-card-header>
           </ion-card>
         </ion-slide>
       </ion-slides>

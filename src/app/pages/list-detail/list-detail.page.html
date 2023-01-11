@@ -9,21 +9,25 @@
 
 <ion-content>
   <ion-list>
-    <ion-item button *ngFor="let item of listitems" [routerLink]="['./items',item.movie.id]">
-      <ion-thumbnail slot="start">
-        <img src="{{item.movie.poster}}">
-      </ion-thumbnail>
-      <ion-label>
-        {{ item.movie.title }}
-        <p>{{item.movie.year}}</p>
-        <p>{{item.movie.director}}</p>
+    <ion-item
+      button
+      *ngFor="let item of listitems"
+      [routerLink]="['./items',item.movie.id]"
+    >
+      <img slot="start" src="{{item.movie.poster}}" />
+      <ion-label class="ion-text-wrap">
+        <h2>{{ item.movie.title }}</h2>
+        <h3>{{ item.movie.year }}</h3>
+        <p>{{ item.movie.director }}</p>
+        <ion-badge>{{ item.movie.imdbrating }}</ion-badge>
       </ion-label>
-      <ion-badge slot="end">{{item.movie.imdbrating}}</ion-badge>
-
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)" >
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data..." ></ion-infinite-scroll-content>
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data..."
+    ></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

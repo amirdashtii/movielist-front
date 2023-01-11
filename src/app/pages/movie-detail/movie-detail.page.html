@@ -10,24 +10,47 @@
 <ion-content *ngIf="movie">
   <ion-card>
     <img src="{{movie.poster}}" />
+
     <ion-card-header>
-      <ion-card-title>{{ movie.title }}</ion-card-title>
-      <ion-card-subtitle *ngFor="let d of movie.director; let isLast = last">
-        {{d}}{{!isLast ? '.' : ''}}
-      </ion-card-subtitle>
-      <span *ngFor="let a of movie.actors; let isLast = last">
-        {{a}}{{!isLast ? ',' : ''}}
+      <ion-card-title>
+        {{ movie.title }}
+        <ion-label> ({{ movie.year }})</ion-label>
+      </ion-card-title>
+      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
+
+      <ion-label>
+        <h3>
+          <ion-icon name="star-outline" color="warning"></ion-icon>
+          <ion-label> {{ movie.imdbrating }} </ion-label>
+          <ion-icon name="time-outline"></ion-icon>
+          <ion-label> {{ movie.runtime }} </ion-label>
+          <ion-icon name="calendar-outline"></ion-icon>
+          <ion-label>{{ movie.released }}</ion-label>
+          <!--| date:'y'-->
+        </h3>
+      </ion-label>
+      <ion-label>
+        <h2>
+          <ion-label> Directed by </ion-label>
+          <span *ngFor="let d of movie.director; let isLast = last">
+            <ion-label color="primary"> {{d}}{{!isLast ? '.' : ''}} </ion-label>
+          </span>
+          <ion-label> Writed by </ion-label>
+          <span *ngFor="let d of movie.writer; let isLast = last">
+            <ion-label color="primary"> {{d}}{{!isLast ? '.' : ''}} </ion-label>
+          </span>
+        </h2>
+      </ion-label>
+      <ion-label> Actors </ion-label>
+      <span *ngFor="let d of movie.actors; let isLast = last">
+        <ion-label color="primary"> {{d}}{{!isLast ? '.' : ''}} </ion-label>
       </span>
     </ion-card-header>
-    <ion-item lines="none">
-      <ion-icon name="calendar-outline" slot="start"></ion-icon>
-       <ion-label>{{ movie.released }}</ion-label> <!--| date:'y'-->
-    </ion-item>
+
     <ion-card-content>
-      
+      <!-- <ion-item lines="none"> -->
+      <!-- </ion-item> -->
       <ion-label color="medium">{{ movie.plot }}</ion-label>
-
-
     </ion-card-content>
   </ion-card>
 </ion-content>

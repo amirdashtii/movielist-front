@@ -35,9 +35,10 @@ const routes: Routes = [
       {
         path: 'tab-search',
         loadChildren: () =>
-          import('../tab-search/tab-search.module').then(
-            (m) => m.TabSearchPageModule
+        import('../tab-search/tab-search.module').then(
+          (m) => m.TabSearchPageModule
           ),
+          canLoad: [AuthGuard],
       },
       {
         path: 'tab-profile',
@@ -46,6 +47,14 @@ const routes: Routes = [
             (m) => m.TabProfilePageModule
           ),
         canLoad: [AuthGuard],
+      },
+      {
+        path: 'add-movie',
+        loadChildren: () =>
+        import('../add-movie/add-movie.module').then(
+          (m) => m.AddMoviePageModule
+          ),
+          canLoad: [AuthGuard],
       },
       {
         path: '',
