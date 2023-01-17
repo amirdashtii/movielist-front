@@ -13,13 +13,17 @@ export class ListDetailPage implements OnInit {
   listitems = [];
   currentPage = 1;
 
-  constructor(private route: ActivatedRoute, private movieService: MovieService, private loadingCtrl: LoadingController) { }
+  constructor(
+    private route: ActivatedRoute,
+    private movieService: MovieService,
+    private loadingCtrl: LoadingController
+  ) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     this.movieService.getListDetails(id).subscribe((res) => {
       this.list = res;
-      console.log("list", this.list);
+      console.log('list', this.list);
       this.loadList();
     });
   }
@@ -31,21 +35,25 @@ export class ListDetailPage implements OnInit {
     });
     await loading.present();
 
-    this.movieService.getListItemDetails(id,this.currentPage).subscribe((res) => {
-      loading.dismiss();      
-      this.listitems.push(...res.results);
-      console.log("listitems: ", this.listitems);
-      
-
-      event?.target.complete();
-      if (event) {
-        event.target.disabled = res.next === null
-      }
+    this.movieService.getListItemDetails(id, this.currentPage).subscribe({
+      next: async (res) => {
+        await loading.dismiss();
+        this.listitems.push(...res.results);
+        console.log('------: ', res);
+        event?.target.complete();
+        if (event) {
+          console.log('next', res.next);
+          event.target.disabled = res.next === null;
+        }
+      },
+      error: async (error) => {
+        await loading.dismiss();
+        event.target.disabled = error.error.detail === 'Invalid page.';
+      },
     });
   }
   loadMore(event: any) {
     this.currentPage++;
     this.loadList(event);
   }
-
 }
