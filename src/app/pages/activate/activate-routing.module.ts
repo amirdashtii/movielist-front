@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { InsidePage } from './inside.page';
+import { ActivatePage } from './activate.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: InsidePage
+    component: ActivatePage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class InsidePageRoutingModule {}
+export class ActivatePageRoutingModule {}

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { InsidePage } from './inside.page';
+import { ActivatePage } from './activate.page';
 
-describe('InsidePage', () => {
-  let component: InsidePage;
-  let fixture: ComponentFixture<InsidePage>;
+describe('ActivatePage', () => {
+  let component: ActivatePage;
+  let fixture: ComponentFixture<ActivatePage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ InsidePage ],
+      declarations: [ ActivatePage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InsidePage);
+    fixture = TestBed.createComponent(ActivatePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -14,20 +14,25 @@ const routes: Routes = [
       import('./pages/login/login.module').then((m) => m.LoginPageModule),
   },
   {
-    path: 'inside',
-    loadChildren: () =>
-      import('./pages/inside/inside.module').then((m) => m.InsidePageModule),
-    canLoad: [AuthGuard],
-  },
-  {
     path: 'signup',
     loadChildren: () =>
       import('./pages/signup/signup.module').then((m) => m.SignupPageModule),
   },
   {
     path: 'create-new-list',
-    loadChildren: () => import('./pages/create-new-list/create-new-list.module').then( m => m.CreateNewListPageModule),
+    loadChildren: () =>
+      import('./pages/create-new-list/create-new-list.module').then(
+        (m) => m.CreateNewListPageModule
+      ),
     canLoad: [AuthGuard],
+  },
+
+  {
+    path: 'activation/:uid/:token',
+    loadChildren: () =>
+      import('./pages/activate/activate.module').then(
+        (m) => m.ActivatePageModule
+      ),
   },
 ];
 @NgModule({

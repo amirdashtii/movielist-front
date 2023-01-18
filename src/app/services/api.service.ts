@@ -11,11 +11,13 @@ const ACCESS_TOKEN_KEY = 'my-access-token';
 const REFRESH_TOKEN_KEY = 'my-refresh-token';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   // Init with null to filter out the first value in a guard!
-  isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    null
+  );
   currentAccessToken = null;
   url = environment.baseUrl;
 
@@ -40,26 +42,47 @@ export class ApiService {
   }
 
   // Create new user
-  signUp(credentials: {username, email, password, re_password}): Observable<any> {
+  signUp(credentials: {
+    username;
+    email;
+    password;
+    re_password;
+  }): Observable<any> {
     return this.http.post(`${this.url}/auth/users/`, credentials);
   }
 
+  verify(uid, token): Observable<any> {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const body = JSON.stringify({ uid, token });
+
+    return this.http.post(`${this.url}/auth/users/activation/`, body, config);
+  }
+  
   // Sign in a user and store access and refres token
-  login(credentials: {username, password}): Observable<any> {
+  login(credentials: { username; password }): Observable<any> {
     return this.http.post(`${this.url}/auth/jwt/create/`, credentials).pipe(
-      switchMap((tokens: {access, refresh}) => {
-        console.log(tokens)
+      switchMap((tokens: { access; refresh }) => {
+        console.log(tokens);
         this.currentAccessToken = tokens.access;
-        const storeAccess = Preferences.set({key: ACCESS_TOKEN_KEY, value: tokens.access});
-        const storeRefresh = Preferences.set({key: REFRESH_TOKEN_KEY, value: tokens.refresh});
+        const storeAccess = Preferences.set({
+          key: ACCESS_TOKEN_KEY,
+          value: tokens.access,
+        });
+        const storeRefresh = Preferences.set({
+          key: REFRESH_TOKEN_KEY,
+          value: tokens.refresh,
+        });
         return from(Promise.all([storeAccess, storeRefresh]));
       }),
-      tap(_ => {
+      tap((_) => {
         this.isAuthenticated.next(true);
       })
-    )
+    );
   }
-
 
   // Potentially perform a logout operation inside your API
   // or simply remove all local tokens and navigate to login
@@ -78,14 +101,18 @@ export class ApiService {
   getNewAccessToken() {
     const refresh = from(Preferences.get({ key: REFRESH_TOKEN_KEY }));
     return refresh.pipe(
-      switchMap(token => {
+      switchMap((token) => {
         if (token && token.value) {
           const httpOptions = {
             headers: new HttpHeaders({
               'Content-Type': 'application/json',
-            })
-          }
-          return this.http.post(`${this.url}/auth/jwt/refresh/`,refresh, httpOptions);
+            }),
+          };
+          return this.http.post(
+            `${this.url}/auth/jwt/refresh/`,
+            refresh,
+            httpOptions
+          );
         } else {
           // No stored refresh token
           return of(null);
