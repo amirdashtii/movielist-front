@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -7,8 +9,20 @@ import { ApiService } from 'src/app/services/api.service';
   styleUrls: ['tab-profile.page.scss'],
 })
 export class TabProfilePage {
-  constructor(private apiService: ApiService) { }
-  logout() {
-    this.apiService.logout();
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private loadingController: LoadingController
+  ) {}
+  async logout() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+
+    this.apiService.logout().subscribe({
+      next: async (v) => {
+        await loading.dismiss();
+        this.router.navigateByUrl('/login', { replaceUrl: true });
+      },
+    });
   }
 }
