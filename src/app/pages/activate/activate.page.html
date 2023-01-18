@@ -5,18 +5,12 @@
 </ion-header>
 
 <ion-content>
-  <div className="container">
-    <div
-      className="d-flex flex-column justify-content-center align-items-center"
-    >
-      <h1>Verify your Account:</h1>
-      <button
-        onClick={verify_account}
-        type="button"
-        className="btn btn-primary"
-      >
-        Verify
-      </button>
-    </div>
-  </div>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Verify your Account:</ion-card-title>
+    </ion-card-header>
+    <ion-button 
+    (click)="verify_account()"
+    >Verify</ion-button>
+  </ion-card>
 </ion-content>
