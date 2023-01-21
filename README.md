@@ -3,7 +3,7 @@
 [![LICENSE](https://img.shields.io/badge/LICENSE-GPL----3.0-green)](https://github.com/amirdashtii/movielist-front/blob/master/LICENSE) 
 [![Requirements](https://img.shields.io/badge/Requirements-See%20Here-orange)](https://github.com/amirdashtii/movielist-front/blob/master/package.json)
 
-This is a personal project where you can make a list of your favorite movies, movies you've seen, movies you want to see, etc.
+This is a trial project at which you can list your favorite movies watched or not watched and or etc. at the front i want to build up something to handle the back. i am not front developer don't judge me.
 
 <div dir="rtl"> 
 این یک پروژه‌ی شخصی است که در آن می‌توانید از فیلم‌های مورد علاقه‌تان، فیلم‌هایی که دیده‌اید، فیلم‌هایی که می‌خواهید ببینید و... لیست تهیه کنید.
