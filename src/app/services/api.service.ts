@@ -61,7 +61,7 @@ export class ApiService {
 
     return this.http.post(`${this.url}/auth/users/activation/`, body, config);
   }
-  
+
   // Sign in a user and store access and refres token
   login(credentials: { username; password }): Observable<any> {
     return this.http.post(`${this.url}/auth/jwt/create/`, credentials).pipe(
@@ -81,6 +81,29 @@ export class ApiService {
       tap((_) => {
         this.isAuthenticated.next(true);
       })
+    );
+  }
+
+  resetPassword(credentials: { email }): Observable<any> {
+    return this.http.post(
+      `${this.url}/auth/users/reset_password/`,
+      credentials
+    );
+  }
+
+  resetPasswordConfirm({ new_password, re_new_password }, uid, token) {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const body = JSON.stringify({ uid, token, new_password, re_new_password });
+    console.log(body);
+
+    return this.http.post(
+      `${this.url}/auth/users/reset_password_confirm/`,
+      body,
+      config
     );
   }
 

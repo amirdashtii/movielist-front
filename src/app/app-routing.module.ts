@@ -34,6 +34,21 @@ const routes: Routes = [
         (m) => m.ActivatePageModule
       ),
   },
+  {
+    path: 'reset-password',
+    loadChildren: () =>
+      import('./pages/reset-password/reset-password.module').then(
+        (m) => m.ResetPasswordPageModule
+      ),
+  },
+  {
+    
+    path: 'password/reset/confirm/:uid/:token',
+    loadChildren: () =>
+      import(
+        './pages/reset-password-confirm/reset-password-confirm.module'
+      ).then((m) => m.ResetPasswordConfirmPageModule),
+  },
 ];
 @NgModule({
   imports: [

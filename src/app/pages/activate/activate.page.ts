@@ -14,7 +14,7 @@ export class ActivatePage implements OnInit {
     private route: ActivatedRoute,
     private loadingController: LoadingController,
     private router: Router,
-    private alertController: AlertController,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {}
@@ -26,18 +26,18 @@ export class ActivatePage implements OnInit {
     const uid = this.route.snapshot.paramMap.get('uid');
     const token = this.route.snapshot.paramMap.get('token');
 
-    this.apiService.verify(uid,token).subscribe({
+    this.apiService.verify(uid, token).subscribe({
       next: async (v) => {
         await loading.dismiss();
-        console.log(v)
+        console.log(v);
         const alert = await this.alertController.create({
           header: 'successful',
           message: 'Your account has been created and is ready to use!',
           buttons: ['OK'],
         });
-    
+
         await alert.present();
-      
+
         this.router.navigateByUrl('/', { replaceUrl: true });
       },
       error: async (error) => {
@@ -48,13 +48,10 @@ export class ActivatePage implements OnInit {
           message: 'error',
           buttons: ['OK'],
         });
-    
-        await alert.present();
-        
 
-      
+        await alert.present();
       },
-    })
+    });
 
     // verify(uid, token);
     // setVerified(true);

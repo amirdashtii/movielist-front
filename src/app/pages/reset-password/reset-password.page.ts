@@ -1,46 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  AlertController,
-  LoadingController,
-  ToastController,
-} from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.page.html',
-  styleUrls: ['./signup.page.scss'],
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.page.html',
+  styleUrls: ['./reset-password.page.scss'],
 })
-export class SignupPage implements OnInit {
+export class ResetPasswordPage implements OnInit {
   credentials: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private apiService: ApiService,
-    private alertController: AlertController,
     private router: Router,
+    private toastController: ToastController,
     private loadingController: LoadingController,
-    private toastController: ToastController
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
     this.credentials = this.fb.group({
-      username: ['', Validators.required],
       email: ['', Validators.email],
-      password: ['', Validators.required],
-      re_password: ['', Validators.required],
     });
   }
-  async signUp() {
+  async reset_password() {
     const loading = await this.loadingController.create();
     await loading.present();
-
-    this.apiService.signUp(this.credentials.value).subscribe({
+    this.apiService.resetPassword(this.credentials.value).subscribe({
       next: async (v) => {
         await loading.dismiss();
-        this.router.navigateByUrl('/', { replaceUrl: true });
+        this.router.navigateByUrl('/login', { replaceUrl: true });
       },
       error: async (error) => {
         await loading.dismiss();
