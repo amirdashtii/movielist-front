@@ -15,7 +15,10 @@ export class TabProfilePage {
     private loadingController: LoadingController
   ) {}
   async logout() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
     await loading.present();
 
     this.apiService.logout().subscribe({

@@ -34,7 +34,10 @@ export class SignupPage implements OnInit {
     });
   }
   async signUp() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
     await loading.present();
 
     this.apiService.signUp(this.credentials.value).subscribe({

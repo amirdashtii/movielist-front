@@ -16,7 +16,7 @@ export class ListDetailPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private movieService: MovieService,
-    private loadingCtrl: LoadingController
+    private loadingController: LoadingController
   ) {}
 
   ngOnInit() {
@@ -29,7 +29,7 @@ export class ListDetailPage implements OnInit {
   }
   async loadList(event?: InfiniteScrollCustomEvent) {
     const id = this.route.snapshot.paramMap.get('id');
-    const loading = await this.loadingCtrl.create({
+    const loading = await this.loadingController.create({
       message: 'Loading..',
       spinner: 'bubbles',
     });

@@ -28,7 +28,10 @@ export class ResetPasswordConfirmPage implements OnInit {
     });
   }
   async reset_password_confirm() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
     await loading.present();
     const uid = this.route.snapshot.paramMap.get('uid');
     const token = this.route.snapshot.paramMap.get('token');

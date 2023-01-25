@@ -33,7 +33,10 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
     await loading.present();
 
     this.apiService.login(this.credentials.value).subscribe({

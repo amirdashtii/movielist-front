@@ -39,7 +39,10 @@ export class CreateNewListPage implements OnInit {
   }
 
   async confirm() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
     await loading.present();
 
     this.movieService.createNweList(this.credentials.value).subscribe({

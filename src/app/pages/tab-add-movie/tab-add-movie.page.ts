@@ -31,7 +31,6 @@ export class TabAddMoviePage implements OnInit {
     private router: Router,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -46,7 +45,7 @@ export class TabAddMoviePage implements OnInit {
   };
 
   async handleChange(ev) {
-    const loading = await this.loadingCtrl.create({
+    const loading = await this.loadingController.create({
       message: 'Loading..',
       spinner: 'bubbles',
     });
@@ -67,7 +66,7 @@ export class TabAddMoviePage implements OnInit {
   }
 
   async loadLists() {
-    const loading = await this.loadingCtrl.create({
+    const loading = await this.loadingController.create({
       message: 'Loading..',
       spinner: 'bubbles',
     });
@@ -81,7 +80,10 @@ export class TabAddMoviePage implements OnInit {
   }
 
   async confirm() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
     await loading.present();
 
     this.movieService.TabAddMovie(this.credentials.value).subscribe({
