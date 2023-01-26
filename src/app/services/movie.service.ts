@@ -81,11 +81,33 @@ export class MovieService {
     return this.http.get<namespace.RootObject>(url);
   }
   getMovieDetails(id: string): Observable<namespace.RootObject> {
-    const url = this.url + `/storage/movies/${id}`;
+    const url = this.url + `/storage/movies/${id}/`;
     return this.http.get<namespace.RootObject>(url);
   }
   createNweList(credentials: { name; description }) {
     return this.http.post(`${this.url}/storage/lists/`, credentials);
+  }
+  getAllMovie(page = 1, credentials): Observable<namespace.RootObject> {
+    let url = this.url + `/storage/movies/?page=${page}`;
+    if (credentials.sortBy !== null) {
+      url += `&ordering=${credentials.sortBy}`;
+    }
+    if (credentials.loweryears !== null) {
+      url += `&year__gte=${credentials.loweryears}`;
+    }
+    if (credentials.upperyears !== null) {
+      url += `&year__lte=${credentials.upperyears}`;
+    }
+    if (credentials.actor !== null) {
+      url += `&actors__full_name=${credentials.actor}`;
+    }
+    if (credentials.director !== null) {
+      url += `&director__full_name=${credentials.director}`;
+    }
+    if (credentials.writer !== null) {
+      url += `&writer__full_name=${credentials.writer}`;
+    }
+    return this.http.get<namespace.RootObject>(url);
   }
   TabAddMovie(credentials: { title; year }) {
     return this.http.post<namespace1.RootObject>(
