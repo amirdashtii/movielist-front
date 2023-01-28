@@ -25,6 +25,7 @@ export class TabSearchPage implements OnInit {
   lastEmittedValue: RangeValue;
   lowerYears = null;
   upperYears = null;
+  isSearchModalOpen = false;
   isFiltersModalOpen = false;
   isSortModalOpen = false;
   movies = [];
@@ -45,6 +46,7 @@ export class TabSearchPage implements OnInit {
       director: [null, Validators.required],
       writer: [null, Validators.required],
       sortBy: [null, Validators.required],
+      search: [null, Validators.required],
     });
   }
   async allMovie() {
@@ -70,8 +72,10 @@ export class TabSearchPage implements OnInit {
     this.movies = [];
     this.currentPage = 1;
     this.infiniteScroll.disabled = false;
-
     this.allMovie();
+  }
+  resetSearch() {
+    this.credentials.value.search = null;
   }
   resetFilters() {
     this.lowerYears = null;
@@ -97,6 +101,9 @@ export class TabSearchPage implements OnInit {
     });
   }
 
+  setOpenSearch(isOpen: boolean) {
+    this.isSearchModalOpen = isOpen;
+  }
   setOpenSort(isOpen: boolean) {
     this.isSortModalOpen = isOpen;
   }

@@ -1,5 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="setOpenSearch(true)">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="primary">
       <ion-button (click)="setOpenSort(true)">
         <ion-icon slot="icon-only" name="swap-vertical-outline"></ion-icon>
@@ -11,6 +16,51 @@
     <ion-title> Search </ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-modal [isOpen]="isSearchModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Sort</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpenSearch(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <form (ngSubmit)="filters()" [formGroup]="credentials">
+        <ion-card>
+          <ion-searchbar
+            formControlName="search"
+            show-clear-button="focus"
+          ></ion-searchbar>
+        </ion-card>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button
+                type="reset"
+                color="light"
+                expand="block"
+                (click)="resetSearch()"
+                >Reset</ion-button
+              >
+            </ion-col>
+            <ion-col>
+              <ion-button
+                type="submit"
+                expand="block"
+                (click)="setOpenSearch(false)"
+                >Done</ion-button
+              >
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 <ion-modal [isOpen]="isSortModalOpen">
   <ng-template>

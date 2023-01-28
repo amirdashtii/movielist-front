@@ -107,6 +107,9 @@ export class MovieService {
     if (credentials.writer !== null) {
       url += `&writer__full_name=${credentials.writer}`;
     }
+    if (credentials.search !== null) {
+      url += `&search=${credentials.search}`;
+    }
     return this.http.get<namespace.RootObject>(url);
   }
   TabAddMovie(credentials: { title; year }) {
