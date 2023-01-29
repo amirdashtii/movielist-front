@@ -76,8 +76,33 @@ export class MovieService {
     const url = this.url + `/storage/lists/${id}/`;
     return this.http.get(url);
   }
-  getListItemDetails(id: string, page = 1): Observable<namespace.RootObject> {
-    const url = this.url + `/storage/lists/${id}/items/?page=${page}`;
+  getListItemDetails(
+    id: string,
+    page = 1,
+    credentials
+  ): Observable<namespace.RootObject> {
+    let url = this.url + `/storage/lists/${id}/items/?page=${page}`;
+    if (credentials.sortBy !== null) {
+      url += `&ordering=${credentials.sortBy}`;
+    }
+    if (credentials.loweryears !== null) {
+      url += `&movie__year__gte=${credentials.loweryears}`;
+    }
+    if (credentials.upperyears !== null) {
+      url += `&movie__year__lte=${credentials.upperyears}`;
+    }
+    if (credentials.actor !== null) {
+      url += `&movie__actors__full_name=${credentials.actor}`;
+    }
+    if (credentials.director !== null) {
+      url += `&movie__director__full_name=${credentials.director}`;
+    }
+    if (credentials.writer !== null) {
+      url += `movie__writer__full_name=${credentials.writer}`;
+    }
+    if (credentials.search !== null) {
+      url += `&search=${credentials.search}`;
+    }
     return this.http.get<namespace.RootObject>(url);
   }
   getMovieDetails(id: string): Observable<namespace.RootObject> {
