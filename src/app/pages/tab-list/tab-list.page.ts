@@ -1,164 +1,118 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadingController, ModalController } from '@ionic/angular';
-import { CreateNewListPage } from '../create-new-list/create-new-list.page';
-import { ApiService } from '../../services/api.service';
-import { MovieService } from '../../services/movie.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  IonInfiniteScroll,
+  LoadingController,
+  RangeCustomEvent,
+} from '@ionic/angular';
+import { MovieService } from 'src/app/services/movie.service';
+import { RangeValue } from '@ionic/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+export interface rValue {
+  lower: number;
+  upper: number;
+}
 
 @Component({
   selector: 'app-tab-list',
   templateUrl: 'tab-list.page.html',
   styleUrls: ['tab-list.page.scss'],
 })
-export class TabListPage implements OnInit {
-  lists = [];
+export class TabSearchPage implements OnInit {
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-  opts = {
-    slidesPerView: 1.4,
-    coverflowEffect: {
-      rotate: 0,
-      stretch: 0,
-      depth: 100,
-      modifier: 3,
-      slideShadows: true,
-    },
-    on: {
-      beforeInit() {
-        const swiper = this;
+  credentials: FormGroup;
+  lastEmittedValue: RangeValue;
+  lowerYears = null;
+  upperYears = null;
+  isSearchModalOpen = false;
+  isFiltersModalOpen = false;
+  isSortModalOpen = false;
+  movies = [];
+  currentPage = 1;
+  ress = '';
 
-        swiper.classNames.push(
-          `${swiper.params.containerModifierClass}coverflow`
-        );
-        swiper.classNames.push(`${swiper.params.containerModifierClass}3d`);
-
-        swiper.params.watchSlidesProgress = true;
-        swiper.originalParams.watchSlidesProgress = true;
-      },
-      setTranslate() {
-        const swiper = this;
-        const {
-          width: swiperWidth,
-          height: swiperHeight,
-          slides,
-          $wrapperEl,
-          slidesSizesGrid,
-          $,
-        } = swiper;
-        const params = swiper.params.coverflowEffect;
-        const isHorizontal = swiper.isHorizontal();
-        const transform$$1 = swiper.translate;
-        const center = isHorizontal
-          ? -transform$$1 + swiperWidth / 2
-          : -transform$$1 + swiperHeight / 2;
-        const rotate = isHorizontal ? params.rotate : -params.rotate;
-        const translate = params.depth;
-        // Each slide offset from center
-        for (let i = 0, length = slides.length; i < length; i += 1) {
-          const $slideEl = slides.eq(i);
-          const slideSize = slidesSizesGrid[i];
-          const slideOffset = $slideEl[0].swiperSlideOffset;
-          const offsetMultiplier =
-            ((center - slideOffset - slideSize / 2) / slideSize) *
-            params.modifier;
-
-          let rotateY = isHorizontal ? rotate * offsetMultiplier : 0;
-          let rotateX = isHorizontal ? 0 : rotate * offsetMultiplier;
-          // var rotateZ = 0
-          let translateZ = -translate * Math.abs(offsetMultiplier);
-
-          let translateY = isHorizontal ? 0 : params.stretch * offsetMultiplier;
-          let translateX = isHorizontal ? params.stretch * offsetMultiplier : 0;
-
-          // Fix for ultra small values
-          if (Math.abs(translateX) < 0.001) translateX = 0;
-          if (Math.abs(translateY) < 0.001) translateY = 0;
-          if (Math.abs(translateZ) < 0.001) translateZ = 0;
-          if (Math.abs(rotateY) < 0.001) rotateY = 0;
-          if (Math.abs(rotateX) < 0.001) rotateX = 0;
-
-          const slideTransform = `translate3d(${translateX}px,${translateY}px,${translateZ}px)  rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-
-          $slideEl.transform(slideTransform);
-          $slideEl[0].style.zIndex =
-            -Math.abs(Math.round(offsetMultiplier)) + 1;
-          if (params.slideShadows) {
-            // Set shadows
-            let $shadowBeforeEl = isHorizontal
-              ? $slideEl.find('.swiper-slide-shadow-left')
-              : $slideEl.find('.swiper-slide-shadow-top');
-            let $shadowAfterEl = isHorizontal
-              ? $slideEl.find('.swiper-slide-shadow-right')
-              : $slideEl.find('.swiper-slide-shadow-bottom');
-            if ($shadowBeforeEl.length === 0) {
-              $shadowBeforeEl = swiper.$(
-                `<div class="swiper-slide-shadow-${
-                  isHorizontal ? 'left' : 'top'
-                }"></div>`
-              );
-              $slideEl.append($shadowBeforeEl);
-            }
-            if ($shadowAfterEl.length === 0) {
-              $shadowAfterEl = swiper.$(
-                `<div class="swiper-slide-shadow-${
-                  isHorizontal ? 'right' : 'bottom'
-                }"></div>`
-              );
-              $slideEl.append($shadowAfterEl);
-            }
-            if ($shadowBeforeEl.length)
-              $shadowBeforeEl[0].style.opacity =
-                offsetMultiplier > 0 ? offsetMultiplier : 0;
-            if ($shadowAfterEl.length)
-              $shadowAfterEl[0].style.opacity =
-                -offsetMultiplier > 0 ? -offsetMultiplier : 0;
-          }
-        }
-
-        // Set correct perspective for IE10
-        if (
-          swiper.support.pointerEvents ||
-          swiper.support.prefixedPointerEvents
-        ) {
-          const ws = $wrapperEl[0].style;
-          ws.perspectiveOrigin = `${center}px 50%`;
-        }
-      },
-      setTransition(duration) {
-        const swiper = this;
-        swiper.slides
-          .transition(duration)
-          .find(
-            '.swiper-slide-shadow-top, .swiper-slide-shadow-right, .swiper-slide-shadow-bottom, .swiper-slide-shadow-left'
-          )
-          .transition(duration);
-      },
-    },
-  };
   constructor(
+    private fb: FormBuilder,
     private movieService: MovieService,
-    private loadingController: LoadingController,
-    private modalCtrl: ModalController
+    private loadingController: LoadingController
   ) {}
-
-  async openModal() {
-    const modal = await this.modalCtrl.create({
-      component: CreateNewListPage,
-    });
-    modal.present();
-  }
   ngOnInit() {
-    this.loadLists();
+    this.allMovie();
+    this.credentials = this.fb.group({
+      loweryears: [null, Validators.required],
+      upperyears: [null, Validators.required],
+      actor: [null, Validators.required],
+      director: [null, Validators.required],
+      writer: [null, Validators.required],
+      sortBy: [null, Validators.required],
+      search: [null, Validators.required],
+    });
   }
-  async loadLists() {
+  async allMovie() {
     const loading = await this.loadingController.create({
       message: 'Loading..',
       spinner: 'bubbles',
     });
     await loading.present();
-
-    this.movieService.getList().subscribe((res) => {
-      loading.dismiss();
-      this.lists.push(...res);
-      console.log(res);
+    this.movieService
+      .getAllMovie(this.currentPage, this.credentials.value)
+      .subscribe({
+        next: async (res) => {
+          await loading.dismiss();
+          this.ress = res.next;
+          this.movies.push(...res.results);
+        },
+        error: async (error) => {
+          await loading.dismiss();
+        },
+      });
+  }
+  filters() {
+    this.movies = [];
+    this.currentPage = 1;
+    this.infiniteScroll.disabled = false;
+    this.allMovie();
+  }
+  resetSearch() {
+    this.credentials.value.search = null;
+  }
+  resetFilters() {
+    this.lowerYears = null;
+    this.upperYears = null;
+    this.credentials.value.loweryears = null;
+    this.credentials.value.upperyears = null;
+    this.credentials.value.actor = null;
+    this.credentials.value.director = null;
+    this.credentials.value.writer = null;
+  }
+  resetSort() {
+    this.credentials.value.sortBy = null;
+  }
+  loadMore(event: any) {
+    setTimeout(() => {
+      this.currentPage++;
+      event.target.complete();
+      if (this.ress === null) {
+        event.target.disabled = true;
+      } else {
+        this.allMovie();
+      }
     });
+  }
+
+  setOpenSearch(isOpen: boolean) {
+    this.isSearchModalOpen = isOpen;
+  }
+  setOpenSort(isOpen: boolean) {
+    this.isSortModalOpen = isOpen;
+  }
+  setOpenFilters(isOpen: boolean) {
+    this.isFiltersModalOpen = isOpen;
+  }
+  onIonChange(ev: Event) {
+    this.lastEmittedValue = (ev as RangeCustomEvent).detail.value as rValue;
+    this.lowerYears = this.lastEmittedValue.lower;
+    this.upperYears = this.lastEmittedValue.upper;
   }
 }

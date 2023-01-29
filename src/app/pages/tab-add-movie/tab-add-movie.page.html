@@ -1,28 +1,37 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Add Movie</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-item>
-    <form (ngSubmit)="confirm()" [formGroup]="credentials">
-      <div class="form-group">
-        <ion-label position="fixed">Title</ion-label>
-        <ion-input placeholder="Enter text" formControlName="title"></ion-input>
-        <ion-label position="fixed">Year</ion-label>
-        <ion-input placeholder="Enter year" formControlName="year"></ion-input>
-      </div>
-      <ion-button
-        id="open-modal"
-        type="submit"
-        expand="block"
-        [disabled]="!credentials.valid"
-        >Search</ion-button
-      >
-      <ion-button color="danger" expand="block">Cancel</ion-button>
-    </form>
-  </ion-item>
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Add Movie</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <form (ngSubmit)="confirm()" [formGroup]="credentials">
+    <ion-label position="fixed">Title</ion-label>
+    <ion-input placeholder="Enter text" formControlName="title"></ion-input>
+    <ion-label position="fixed">Year</ion-label>
+    <ion-input placeholder="Enter year" formControlName="year"></ion-input>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button color="danger" expand="block">Cancel</ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button
+            id="open-modal"
+            type="submit"
+            expand="block"
+            [disabled]="!credentials.valid"
+            >Search</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 
   <ion-modal #modal trigger="open-modal">
     <ng-template>

@@ -9,6 +9,30 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'tab-home',
+        loadChildren: () =>
+          import('../tab-home/tab-home.module').then(
+            (m) => m.TabHomePageModule
+          ),
+        canLoad: [AuthGuard],
+      },
+      {
+        path: 'tab-home/:id',
+        loadChildren: () =>
+          import('../list-detail/list-detail.module').then(
+            (m) => m.ListDetailPageModule
+          ),
+        canLoad: [AuthGuard],
+      },
+      {
+        path: 'tab-home/:id/items/:id',
+        loadChildren: () =>
+          import('../movie-detail/movie-detail.module').then(
+            (m) => m.MovieDetailPageModule
+          ),
+        canLoad: [AuthGuard],
+      },
+      {
         path: 'tab-list',
         loadChildren: () =>
           import('../tab-list/tab-list.module').then(
@@ -19,35 +43,11 @@ const routes: Routes = [
       {
         path: 'tab-list/:id',
         loadChildren: () =>
-          import('../list-detail/list-detail.module').then(
-            (m) => m.ListDetailPageModule
-          ),
-        canLoad: [AuthGuard],
-      },
-      {
-        path: 'tab-list/:id/items/:id',
-        loadChildren: () =>
           import('../movie-detail/movie-detail.module').then(
             (m) => m.MovieDetailPageModule
           ),
         canLoad: [AuthGuard],
       },
-      {
-        path: 'tab-search',
-        loadChildren: () =>
-        import('../tab-search/tab-search.module').then(
-          (m) => m.TabSearchPageModule
-          ),
-          canLoad: [AuthGuard],
-        },
-        {
-          path: 'tab-search/:id',
-          loadChildren: () =>
-            import('../movie-detail/movie-detail.module').then(
-              (m) => m.MovieDetailPageModule
-            ),
-          canLoad: [AuthGuard],
-        },
       {
         path: 'tab-profile',
         loadChildren: () =>
@@ -66,14 +66,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/tab-list',
+        redirectTo: '/tabs/tab-home',
         pathMatch: 'full',
       },
     ],
   },
   {
     path: '',
-    redirectTo: '/tabs/tab-list',
+    redirectTo: '/tabs/tab-home',
     pathMatch: 'full',
   },
 ];

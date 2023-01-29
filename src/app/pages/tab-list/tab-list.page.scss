@@ -1,15 +1,26 @@
-.section-title {
-    font-weight: 600;
-    font-size: large;
-}
-ion-slides {
-    margin-top: 4px;
+ion-thumbnail {
+  --border-radius: 3px;
 }
 
+img {
+  max-width: auto;
+  max-height: 130px;
+  border-radius: 4px;
+}
 ion-card-header.ios {
-    display: flex;
-    flex-flow: column-reverse;
-    ion-card-title{
-        font-size:smaller;
-    };
-  }
+  display: flex;
+  flex-flow: column-reverse;
+}
+
+ion-card-title {
+  font-size: medium;
+  padding: 10px 20px 5px;
+}
+
+ion-card-header {
+  font-size: large;
+  padding: 5px 20px 5px;
+}
+ion-range {
+  padding: 0px 20px 5px;
+}

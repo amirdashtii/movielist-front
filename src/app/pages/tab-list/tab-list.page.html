@@ -1,37 +1,267 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> List </ion-title>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="setOpenSearch(true)">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button (click)="setOpenSort(true)">
+        <ion-icon slot="icon-only" name="swap-vertical-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="setOpenFilters(true)">
+        <ion-icon slot="icon-only" name="options-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title> My movies </ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-modal [isOpen]="isSearchModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Sort</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpenSearch(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding" [fullscreen]="true">
+      <form (ngSubmit)="filters()" [formGroup]="credentials">
+        <ion-card>
+          <ion-searchbar
+            formControlName="search"
+            show-clear-button="focus"
+          ></ion-searchbar>
+        </ion-card>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button
+                type="reset"
+                color="light"
+                expand="block"
+                (click)="resetSearch()"
+                >Reset</ion-button
+              >
+            </ion-col>
+            <ion-col>
+              <ion-button
+                type="submit"
+                expand="block"
+                (click)="setOpenSearch(false)"
+                >Done</ion-button
+              >
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="isSortModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Sort</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpenSort(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <form (ngSubmit)="filters()" [formGroup]="credentials">
+        <ion-card>
+          <ion-radio-group
+            [allowEmptySelection]="true"
+            value="-added_at"
+            formControlName="sortBy"
+          >
+            <ion-item>
+              <ion-label>Title</ion-label>
+              <ion-icon slot="start" name="arrow-down-outline"></ion-icon>
+              <ion-radio slot="end" value="title"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Title</ion-label>
+              <ion-icon slot="start" name="arrow-up-outline"></ion-icon>
+              <ion-radio slot="end" value="-title"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Year</ion-label>
+              <ion-icon slot="start" name="arrow-down-outline"></ion-icon>
+              <ion-radio slot="end" value="year"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Year</ion-label>
+              <ion-icon slot="start" name="arrow-up-outline"></ion-icon>
+              <ion-radio slot="end" value="-year"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Director</ion-label>
+              <ion-icon slot="start" name="arrow-down-outline"></ion-icon>
+              <ion-radio slot="end" value="director__full_name"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Director</ion-label>
+              <ion-icon slot="start" name="arrow-up-outline"></ion-icon>
+              <ion-radio slot="end" value="-director__full_name"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>IMDBrating</ion-label>
+              <ion-icon slot="start" name="arrow-down-outline"></ion-icon>
+              <ion-radio slot="end" value="imdbrating"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>IMDBrating</ion-label>
+              <ion-icon slot="start" name="arrow-up-outline"></ion-icon>
+              <ion-radio slot="end" value="-imdbrating"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Date Add </ion-label>
+              <ion-icon slot="start" name="arrow-down-outline"></ion-icon>
+              <ion-radio slot="end" value="added_at"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Date Add </ion-label>
+              <ion-icon slot="start" name="arrow-up-outline"></ion-icon>
+              <ion-radio slot="end" value="-added_at"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-card>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button color="light" expand="block" (click)="resetSort()"
+                >Reset</ion-button
+              >
+            </ion-col>
+            <ion-col>
+              <ion-button
+                type="submit"
+                expand="block"
+                (click)="setOpenSort(false)"
+                >Done</ion-button
+              >
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="isFiltersModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Filters</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpenFilters(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <form (ngSubmit)="filters()" [formGroup]="credentials">
+        <ion-card>
+          <ion-card-title>Cast</ion-card-title>
+          <ion-input formControlName="actor" placeholder="Actor"></ion-input>
+          <ion-input
+            formControlName="director"
+            placeholder="Director"
+          ></ion-input>
+          <ion-input formControlName="writer" placeholder="Writer"></ion-input>
+        </ion-card>
+        <ion-card>
+          <ion-card-title>Year</ion-card-title>
+          <ion-range
+            [dualKnobs]="true"
+            [pin]="true"
+            max="2023"
+            min="1895"
+            [value]="{ lower: 1895, upper: 2023 }"
+            (ionChange)="onIonChange($event)"
+          ></ion-range>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-input
+                  type="number"
+                  placeholder="{{lowerYears}}"
+                  value="{{lowerYears}}"
+                  formControlName="loweryears"
+                ></ion-input>
+              </ion-col>
+              <ion-col> </ion-col>
+              <ion-col> </ion-col>
+              <ion-col>
+                <ion-input
+                  type="number"
+                  placeholder="{{upperYears}}"
+                  value="{{upperYears}}"
+                  formControlName="upperyears"
+                ></ion-input>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button
+                type="reset"
+                color="light"
+                expand="block"
+                (click)="resetFilters()"
+                >Reset</ion-button
+              >
+            </ion-col>
+            <ion-col>
+              <ion-button
+                type="submit"
+                expand="block"
+                (click)="setOpenFilters(false)"
+                >Done</ion-button
+              >
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">My Lists</ion-title>
+      <ion-title size="large">My Movies</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <ion-list *ngFor="let list of lists" class="ion-padding">
-    <ion-list-header>
-      <ion-label class="section-title">
-        <h1>{{ list.name }}</h1>
-        <p>{{ list.total_movie }}</p>
+  <ion-list>
+    <ion-item
+      button
+      *ngFor="let movie of movies"
+      [routerLink]="['./',movie.id]"
+    >
+      <img slot="start" src="{{ movie.poster }}" />
+      <ion-label class="ion-text-wrap">
+        <h2>{{ movie.title }}</h2>
+        <h3>{{ movie.year }}</h3>
+        <p>{{ movie.director }}</p>
+        <ion-badge>{{ movie.imdbrating }}</ion-badge>
       </ion-label>
-      <ion-button [routerLink]="[list.id]">See All</ion-button>
-    </ion-list-header>
-    <ion-item>
-      <ion-slides [options]="opts">
-        <ion-slide *ngFor="let item of list.items">
-          <ion-card button="true" href="/tabs/tab-list/{{list.id}}/items/{{item.movie.id}}">
-            <img src="{{item.movie.poster}}" />
-          </ion-card>
-        </ion-slide>
-      </ion-slides>
     </ion-item>
   </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data..."
+    ></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
-<ion-fab vertical="bottom" horizontal="end">
-  <ion-fab-button size="small" (click)="openModal()">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
