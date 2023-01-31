@@ -32,6 +32,7 @@ export class TabAddMoviePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
   ) {}
+  credent = null
 
   ngOnInit() {
     this.loadLists();
@@ -72,7 +73,7 @@ export class TabAddMoviePage implements OnInit {
     });
     await loading.present();
 
-    this.movieService.getList().subscribe((res) => {
+    this.movieService.getList(this.credent).subscribe((res) => {
       loading.dismiss();
       this.lists.push(...res);
       console.log(res);

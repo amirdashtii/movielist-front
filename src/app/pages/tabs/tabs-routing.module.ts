@@ -17,7 +17,7 @@ const routes: Routes = [
         canLoad: [AuthGuard],
       },
       {
-        path: 'tab-home/:id',
+        path: 'tab-list/:id',
         loadChildren: () =>
           import('../list-detail/list-detail.module').then(
             (m) => m.ListDetailPageModule

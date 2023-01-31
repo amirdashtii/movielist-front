@@ -67,8 +67,11 @@ export class MovieService {
 
   constructor(private apiService: ApiService, private http: HttpClient) {}
 
-  getList(): Observable<any> {
-    const url = this.url + '/storage/lists/';
+  getList(credentials): Observable<any> {
+    let url = this.url + '/storage/lists/';
+    if (credentials.sortBy !== null) {
+      url += `?ordering=${credentials.sortBy}`;
+    }
     return this.http.get(url);
   }
 
@@ -105,6 +108,10 @@ export class MovieService {
     }
     return this.http.get<namespace.RootObject>(url);
   }
+  deleteList(id: string) {
+    const url = this.url + `/storage/lists/${id}/`;
+    return this.http.delete(url);
+  }
   getMovieDetails(id: string): Observable<namespace.RootObject> {
     const url = this.url + `/storage/movies/${id}/`;
     return this.http.get<namespace.RootObject>(url);
@@ -112,29 +119,8 @@ export class MovieService {
   createNweList(credentials: { name; description }) {
     return this.http.post(`${this.url}/storage/lists/`, credentials);
   }
-  getAllMovie(page = 1, credentials): Observable<namespace.RootObject> {
+  getAllMovie(page = 1): Observable<namespace.RootObject> {
     let url = this.url + `/storage/movies/?page=${page}`;
-    if (credentials.sortBy !== null) {
-      url += `&ordering=${credentials.sortBy}`;
-    }
-    if (credentials.loweryears !== null) {
-      url += `&year__gte=${credentials.loweryears}`;
-    }
-    if (credentials.upperyears !== null) {
-      url += `&year__lte=${credentials.upperyears}`;
-    }
-    if (credentials.actor !== null) {
-      url += `&actors__full_name=${credentials.actor}`;
-    }
-    if (credentials.director !== null) {
-      url += `&director__full_name=${credentials.director}`;
-    }
-    if (credentials.writer !== null) {
-      url += `&writer__full_name=${credentials.writer}`;
-    }
-    if (credentials.search !== null) {
-      url += `&search=${credentials.search}`;
-    }
     return this.http.get<namespace.RootObject>(url);
   }
   TabAddMovie(credentials: { title; year }) {

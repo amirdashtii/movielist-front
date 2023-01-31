@@ -138,6 +138,7 @@ export class TabListPage implements OnInit {
     private loadingController: LoadingController,
     private modalCtrl: ModalController
   ) {}
+  credentials = null;
 
   async openModal() {
     const modal = await this.modalCtrl.create({
@@ -155,7 +156,7 @@ export class TabListPage implements OnInit {
     });
     await loading.present();
 
-    this.movieService.getList().subscribe((res) => {
+    this.movieService.getList(this.credentials).subscribe((res) => {
       loading.dismiss();
       this.lists.push(...res);
       console.log(res);

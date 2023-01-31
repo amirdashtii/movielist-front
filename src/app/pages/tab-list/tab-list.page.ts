@@ -1,118 +1,171 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
-  IonInfiniteScroll,
+  ActionSheetController,
+  AlertController,
+  IonModal,
   LoadingController,
-  RangeCustomEvent,
 } from '@ionic/angular';
 import { MovieService } from 'src/app/services/movie.service';
-import { RangeValue } from '@ionic/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-export interface rValue {
-  lower: number;
-  upper: number;
-}
+import { OverlayEventDetail } from '@ionic/core/components';
 
 @Component({
   selector: 'app-tab-list',
   templateUrl: 'tab-list.page.html',
   styleUrls: ['tab-list.page.scss'],
 })
-export class TabSearchPage implements OnInit {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-
+export class TabListPage implements OnInit {
+  @ViewChild(IonModal) modal: IonModal;
   credentials: FormGroup;
-  lastEmittedValue: RangeValue;
-  lowerYears = null;
-  upperYears = null;
-  isSearchModalOpen = false;
-  isFiltersModalOpen = false;
+  testimonial: FormGroup;
+  lists = [];
+  ress = null;
   isSortModalOpen = false;
-  movies = [];
-  currentPage = 1;
-  ress = '';
+  isCreateModalOpen = false;
+  sort_by = 'Date Added';
+  dateAddedIcon = 'arrow-down-outline';
+  listNameIcon = '';
 
   constructor(
-    private fb: FormBuilder,
     private movieService: MovieService,
-    private loadingController: LoadingController
+    private fb: FormBuilder,
+    private actionSheetCtrl: ActionSheetController,
+    private loadingController: LoadingController,
+    private alertController: AlertController
   ) {}
+
   ngOnInit() {
     this.allMovie();
     this.credentials = this.fb.group({
-      loweryears: [null, Validators.required],
-      upperyears: [null, Validators.required],
-      actor: [null, Validators.required],
-      director: [null, Validators.required],
-      writer: [null, Validators.required],
-      sortBy: [null, Validators.required],
-      search: [null, Validators.required],
+      sortBy: ['created_at', Validators.required],
+    });
+    this.testimonial = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
     });
   }
+
   async allMovie() {
     const loading = await this.loadingController.create({
       message: 'Loading..',
       spinner: 'bubbles',
     });
     await loading.present();
-    this.movieService
-      .getAllMovie(this.currentPage, this.credentials.value)
-      .subscribe({
-        next: async (res) => {
-          await loading.dismiss();
-          this.ress = res.next;
-          this.movies.push(...res.results);
-        },
-        error: async (error) => {
-          await loading.dismiss();
-        },
-      });
-  }
-  filters() {
-    this.movies = [];
-    this.currentPage = 1;
-    this.infiniteScroll.disabled = false;
-    this.allMovie();
-  }
-  resetSearch() {
-    this.credentials.value.search = null;
-  }
-  resetFilters() {
-    this.lowerYears = null;
-    this.upperYears = null;
-    this.credentials.value.loweryears = null;
-    this.credentials.value.upperyears = null;
-    this.credentials.value.actor = null;
-    this.credentials.value.director = null;
-    this.credentials.value.writer = null;
-  }
-  resetSort() {
-    this.credentials.value.sortBy = null;
-  }
-  loadMore(event: any) {
-    setTimeout(() => {
-      this.currentPage++;
-      event.target.complete();
-      if (this.ress === null) {
-        event.target.disabled = true;
-      } else {
-        this.allMovie();
-      }
+    this.movieService.getList(this.credentials.value).subscribe({
+      next: async (res) => {
+        await loading.dismiss();
+        console.log(res);
+        this.lists.push(...res);
+      },
+      error: async (error) => {
+        await loading.dismiss();
+      },
     });
   }
-
-  setOpenSearch(isOpen: boolean) {
-    this.isSearchModalOpen = isOpen;
+  refresh() {
+    if (
+      this.dateAddedIcon === 'arrow-up-outline' ||
+      this.listNameIcon === 'arrow-up-outline'
+    ) {
+      this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
+    }
+    this.lists = [];
+    this.allMovie();
   }
   setOpenSort(isOpen: boolean) {
     this.isSortModalOpen = isOpen;
   }
-  setOpenFilters(isOpen: boolean) {
-    this.isFiltersModalOpen = isOpen;
+  resetSort() {
+    this.credentials = this.fb.group({
+      sortBy: ['created_at', Validators.required],
+    });
+    this.sort_by = 'Date Added';
+    this.dateAddedIcon = 'arrow-down-outline';
+    this.listNameIcon = '';
   }
-  onIonChange(ev: Event) {
-    this.lastEmittedValue = (ev as RangeCustomEvent).detail.value as rValue;
-    this.lowerYears = this.lastEmittedValue.lower;
-    this.upperYears = this.lastEmittedValue.upper;
+  handleChange(e) {
+    if (e.detail.value === 'created_at') {
+      this.sort_by = 'Date Added';
+      this.dateAddedIcon = 'arrow-down-outline';
+      this.listNameIcon = '';
+    } else if (e.detail.value === 'name') {
+      this.sort_by = 'List Name';
+      this.listNameIcon = 'arrow-down-outline';
+      this.dateAddedIcon = '';
+    }
+    console.log('ev ', e.detail.value);
+  }
+  dateAddedDir() {
+    if (this.dateAddedIcon === 'arrow-down-outline') {
+      this.dateAddedIcon = 'arrow-up-outline';
+    } else if (this.dateAddedIcon === 'arrow-up-outline') {
+      this.dateAddedIcon = 'arrow-down-outline';
+    }
+  }
+  listNameDir() {
+    if (this.listNameIcon === 'arrow-down-outline') {
+      this.listNameIcon = 'arrow-up-outline';
+    } else if (this.listNameIcon === 'arrow-up-outline') {
+      this.listNameIcon = 'arrow-down-outline';
+    }
+  }
+  async presentDeleteSheet(list) {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Are you sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: async () => {
+            console.log(list);
+
+            const loading = await this.loadingController.create({
+              message: 'Loading..',
+              spinner: 'bubbles',
+            });
+            await loading.present();
+            this.movieService.deleteList(list.id).subscribe({
+              next: async (res) => {
+                await loading.dismiss();
+                this.refresh();
+              },
+              error: async (error) => {
+                await loading.dismiss();
+              },
+            });
+          },
+        },
+        {
+          text: 'No',
+        },
+      ],
+    });
+
+    await actionSheet.present();
+  }
+  setOpenCreate(isOpen: boolean) {
+    this.isCreateModalOpen = isOpen;
+  }
+  async save() {
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
+    await loading.present();
+
+    this.movieService.createNweList(this.testimonial.value).subscribe({
+      next: async (_) => {
+        await loading.dismiss();
+        this.refresh();
+      },
+      error: async (res) => {
+        await loading.dismiss();
+        const alert = await this.alertController.create({
+          header: 'fail',
+          message: res.error.msg,
+          buttons: ['OK'],
+        });
+        await alert.present();
+      },
+    });
   }
 }
