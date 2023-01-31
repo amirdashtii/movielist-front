@@ -19,15 +19,6 @@ const routes: Routes = [
       import('./pages/signup/signup.module').then((m) => m.SignupPageModule),
   },
   {
-    path: 'create-new-list',
-    loadChildren: () =>
-      import('./pages/create-new-list/create-new-list.module').then(
-        (m) => m.CreateNewListPageModule
-      ),
-    canLoad: [AuthGuard],
-  },
-
-  {
     path: 'activation/:uid/:token',
     loadChildren: () =>
       import('./pages/activate/activate.module').then(

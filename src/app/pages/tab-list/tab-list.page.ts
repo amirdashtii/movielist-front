@@ -93,7 +93,6 @@ export class TabListPage implements OnInit {
       this.listNameIcon = 'arrow-down-outline';
       this.dateAddedIcon = '';
     }
-    console.log('ev ', e.detail.value);
   }
   dateAddedDir() {
     if (this.dateAddedIcon === 'arrow-down-outline') {
@@ -116,8 +115,6 @@ export class TabListPage implements OnInit {
         {
           text: 'Yes',
           handler: async () => {
-            console.log(list);
-
             const loading = await this.loadingController.create({
               message: 'Loading..',
               spinner: 'bubbles',

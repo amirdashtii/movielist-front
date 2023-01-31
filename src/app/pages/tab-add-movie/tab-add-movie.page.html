@@ -10,7 +10,7 @@
       <ion-title size="large">Add Movie</ion-title>
     </ion-toolbar>
   </ion-header>
-  <form (ngSubmit)="confirm()" [formGroup]="credentials">
+  <form (ngSubmit)="confirm()" [formGroup]="testimonial">
     <ion-label position="fixed">Title</ion-label>
     <ion-input placeholder="Enter text" formControlName="title"></ion-input>
     <ion-label position="fixed">Year</ion-label>
@@ -25,7 +25,7 @@
             id="open-modal"
             type="submit"
             expand="block"
-            [disabled]="!credentials.valid"
+            [disabled]="!testimonial.valid"
             >Search</ion-button
           >
         </ion-col>

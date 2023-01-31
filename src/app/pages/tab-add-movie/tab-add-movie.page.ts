@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   AlertController,
@@ -18,6 +18,7 @@ export class TabAddMoviePage implements OnInit {
   lists = [];
   listId = undefined;
   imdbid = undefined;
+  testimonial: FormGroup;
   credentials: FormGroup;
   search = [];
   title: string;
@@ -32,11 +33,13 @@ export class TabAddMoviePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
   ) {}
-  credent = null
 
   ngOnInit() {
     this.loadLists();
     this.credentials = this.fb.group({
+      sortBy: ['created_at', Validators.required],
+    });
+    this.testimonial = this.fb.group({
       title: [''],
       year: [''],
     });
@@ -73,7 +76,7 @@ export class TabAddMoviePage implements OnInit {
     });
     await loading.present();
 
-    this.movieService.getList(this.credent).subscribe((res) => {
+    this.movieService.getList(this.credentials).subscribe((res) => {
       loading.dismiss();
       this.lists.push(...res);
       console.log(res);
@@ -87,7 +90,7 @@ export class TabAddMoviePage implements OnInit {
     });
     await loading.present();
 
-    this.movieService.TabAddMovie(this.credentials.value).subscribe({
+    this.movieService.TabAddMovie(this.testimonial.value).subscribe({
       next: async (res) => {
         await loading.dismiss();
         this.search.push(...res.Search);

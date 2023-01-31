@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { CreateNewListPage } from '../create-new-list/create-new-list.page';
-import { ApiService } from '../../services/api.service';
 import { MovieService } from '../../services/movie.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-tab-home',
@@ -11,6 +10,7 @@ import { MovieService } from '../../services/movie.service';
 })
 export class TabListPage implements OnInit {
   lists = [];
+  credentials: FormGroup;
 
   opts = {
     slidesPerView: 1.4,
@@ -135,19 +135,15 @@ export class TabListPage implements OnInit {
   };
   constructor(
     private movieService: MovieService,
+    private fb: FormBuilder,
     private loadingController: LoadingController,
     private modalCtrl: ModalController
   ) {}
-  credentials = null;
-
-  async openModal() {
-    const modal = await this.modalCtrl.create({
-      component: CreateNewListPage,
-    });
-    modal.present();
-  }
   ngOnInit() {
     this.loadLists();
+    this.credentials = this.fb.group({
+      sortBy: ['created_at', Validators.required],
+    });
   }
   async loadLists() {
     const loading = await this.loadingController.create({
