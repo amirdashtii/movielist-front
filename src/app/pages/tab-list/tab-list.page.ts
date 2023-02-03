@@ -24,7 +24,7 @@ export class TabListPage implements OnInit {
   isCreateModalOpen = false;
   sort_by = 'Date Added';
   dateAddedIcon = 'arrow-down-outline';
-  listNameIcon = '';
+  listNameIcon = 'none';
 
   constructor(
     private movieService: MovieService,
@@ -37,7 +37,7 @@ export class TabListPage implements OnInit {
   ngOnInit() {
     this.allMovie();
     this.credentials = this.fb.group({
-      sortBy: ['created_at', Validators.required],
+      sortBy: ['-created_at', Validators.required],
     });
     this.testimonial = this.fb.group({
       name: ['', Validators.required],
@@ -64,7 +64,7 @@ export class TabListPage implements OnInit {
   }
   refresh() {
     if (
-      this.dateAddedIcon === 'arrow-up-outline' ||
+      this.dateAddedIcon === 'arrow-down-outline' ||
       this.listNameIcon === 'arrow-up-outline'
     ) {
       this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
@@ -81,17 +81,17 @@ export class TabListPage implements OnInit {
     });
     this.sort_by = 'Date Added';
     this.dateAddedIcon = 'arrow-down-outline';
-    this.listNameIcon = '';
+    this.listNameIcon = 'none';
   }
   handleChange(e) {
     if (e.detail.value === 'created_at') {
       this.sort_by = 'Date Added';
       this.dateAddedIcon = 'arrow-down-outline';
-      this.listNameIcon = '';
+      this.listNameIcon = 'none';
     } else if (e.detail.value === 'name') {
       this.sort_by = 'List Name';
       this.listNameIcon = 'arrow-down-outline';
-      this.dateAddedIcon = '';
+      this.dateAddedIcon = 'none';
     }
   }
   dateAddedDir() {

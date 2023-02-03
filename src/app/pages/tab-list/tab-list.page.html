@@ -26,7 +26,7 @@
   <ion-list-header>
     <ion-label color="primary">TITLE</ion-label>
   </ion-list-header>
-  <ion-list *ngFor="let list of lists" class="ion-padding">
+  <ion-list *ngFor="let list of lists">
     <ion-item-sliding>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="presentDeleteSheet(list)">
@@ -65,7 +65,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
+    <ion-content>
       <ion-item>
         <h4>Sort By</h4>
         <p slot="end">{{sort_by}}</p>
@@ -123,7 +123,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content>
       <form (ngSubmit)="save()" [formGroup]="testimonial">
         <ion-item>
           <ion-label position="stacked" color="primary">TITLE</ion-label>

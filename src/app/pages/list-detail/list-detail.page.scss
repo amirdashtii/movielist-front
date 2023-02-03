@@ -3,7 +3,21 @@ ion-thumbnail {
 }
 
 img {
+  padding-top: 4px;
+  padding-bottom: 4px;
   max-width: auto;
   max-height: 130px;
   border-radius: 4px;
+}
+ion-item.aa {
+  --padding-start: 0;
+}
+ion-icon.icon_aa {
+  margin-right: 5px;
+  color: rgb(255, 220, 0);
+  font-size: 15px;
+}
+h3.h3-aa {
+  margin-bottom: 0;
+  padding-inline-end: 10px;
 }

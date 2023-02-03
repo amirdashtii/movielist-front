@@ -21,18 +21,25 @@ export interface rValue {
 })
 export class ListDetailPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-
   credentials: FormGroup;
-  lastEmittedValue: RangeValue;
-  lowerYears = null;
-  upperYears = null;
   list = null;
   listitems = [];
+  years = [];
   currentPage = 1;
-  isSearchModalOpen = false;
-  isFiltersModalOpen = false;
-  isSortModalOpen = false;
   ress = '';
+  isFiltersModalOpen = false;
+  iconName = 'arrow-down-outline';
+  dateAddedIcon = this.iconName;
+  titleIcon = 'none';
+  yearIcon = 'none';
+  imdbratingIcon = 'none';
+  metascoreIcon = 'none';
+  runtimeIcon = 'none';
+  sort_by = 'Date Added';
+  lowerYears = null;
+  upperYears = null;
+
+  lastEmittedValue: RangeValue;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,16 +53,18 @@ export class ListDetailPage implements OnInit {
     this.movieService.getListDetails(id).subscribe((res) => {
       this.list = res;
       console.log('list', this.list);
+      for (var item of this.list.items) {
+        this.years.push(item.movie.year);
+      }
+      this.years.sort();
+      this.lowerYears = this.years[0];
+      this.upperYears = this.years.slice(-1);
       this.loadList();
     });
     this.credentials = this.fb.group({
+      sortBy: ['-movie__added_at', Validators.required],
       loweryears: [null, Validators.required],
       upperyears: [null, Validators.required],
-      actor: [null, Validators.required],
-      director: [null, Validators.required],
-      writer: [null, Validators.required],
-      sortBy: [null, Validators.required],
-      search: [null, Validators.required],
     });
   }
   async loadList(event?: InfiniteScrollCustomEvent) {
@@ -72,7 +81,7 @@ export class ListDetailPage implements OnInit {
           await loading.dismiss();
           this.ress = res.next;
           this.listitems.push(...res.results);
-          console.log('------: ', res);
+          console.log('listitems: ', res);
         },
         error: async (error) => {
           await loading.dismiss();
@@ -91,39 +100,98 @@ export class ListDetailPage implements OnInit {
     });
   }
 
-  filters() {
+  refresh() {
     this.listitems = [];
     this.currentPage = 1;
     this.infiniteScroll.disabled = false;
     this.loadList();
   }
+  changeSortdir(i) {
+    if (i === this.credentials.value.sortBy) {
+      if (this.iconName === 'arrow-down-outline') {
+        this.iconName = 'arrow-up-outline';
+      } else this.iconName = 'arrow-down-outline';
+
+      if (i === 'movie__added_at') {
+        this.dateAddedIcon = this.iconName;
+      } else if (i === 'movie__title') {
+        this.titleIcon = this.iconName;
+      } else if (i === 'movie__year') {
+        this.yearIcon = this.iconName;
+      } else if (i === 'movie__imdbrating') {
+        this.imdbratingIcon = this.iconName;
+      } else if (i === 'movie__metascore') {
+        this.metascoreIcon = this.iconName;
+      } else if (i === 'movie__runtime') {
+        this.runtimeIcon = this.iconName;
+      }
+    }
+  }
+  handleChange(e) {
+    this.iconName = 'arrow-down-outline';
+    this.dateAddedIcon = 'none';
+    this.titleIcon = 'none';
+    this.yearIcon = 'none';
+    this.imdbratingIcon = 'none';
+    this.metascoreIcon = 'none';
+    this.runtimeIcon = 'none';
+    if (e.detail.value === 'movie__added_at') {
+      this.sort_by = 'Date Added';
+      this.dateAddedIcon = this.iconName;
+    } else if (e.detail.value === 'movie__title') {
+      this.sort_by = 'Title';
+      this.titleIcon = this.iconName;
+    } else if (e.detail.value === 'movie__year') {
+      this.sort_by = 'Year';
+      this.yearIcon = this.iconName;
+    } else if (e.detail.value === 'movie__imdbrating') {
+      this.sort_by = 'IMDb rating';
+      this.imdbratingIcon = this.iconName;
+    } else if (e.detail.value === 'movie__metascore') {
+      this.sort_by = 'Metascore';
+      this.metascoreIcon = this.iconName;
+    } else if (e.detail.value === 'movie__runtime') {
+      this.sort_by = 'Runtime';
+      this.runtimeIcon = this.iconName;
+    }
+  }
+
   setOpenFilters(isOpen: boolean) {
     this.isFiltersModalOpen = isOpen;
   }
+  refine() {
+    if (
+      this.credentials.value.sortBy === 'movie__title' ||
+      this.credentials.value.sortBy === 'movie__runtime'
+    ) {
+      if (this.iconName === 'arrow-up-outline') {
+        this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
+      }
+    } else if (this.iconName === 'arrow-down-outline') {
+      this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
+    }
+    console.log(this.credentials.value.sortBy);
+    this.refresh();
+  }
   resetFilters() {
-    this.lowerYears = null;
-    this.upperYears = null;
-    this.credentials.value.loweryears = null;
-    this.credentials.value.upperyears = null;
-    this.credentials.value.actor = null;
-    this.credentials.value.director = null;
-    this.credentials.value.writer = null;
+    this.lowerYears = this.years[0];
+    this.upperYears = this.years.slice(-1);
+    this.credentials = this.fb.group({
+      sortBy: ['-movie__added_at', Validators.required],
+      loweryears: [null, Validators.required],
+      upperyears: [null, Validators.required],
+    });
+    this.sort_by = 'Date Added';
+    this.iconName = 'arrow-down-outline';
+    this.dateAddedIcon = this.iconName;
+    this.titleIcon = 'none';
+    this.yearIcon = 'none';
+    this.imdbratingIcon = 'none';
+    this.metascoreIcon = 'none';
+    this.runtimeIcon = 'none';
   }
-  setOpenSearch(isOpen: boolean) {
-    this.isSearchModalOpen = isOpen;
-  }
-  resetSearch() {
-    this.credentials.value.search = null;
-  }
-  setOpenSort(isOpen: boolean) {
-    this.isSortModalOpen = isOpen;
-  }
-  resetSort() {
-    this.credentials.value.sortBy = null;
-  }
-  onIonChange(ev: Event) {
-    this.lastEmittedValue = (ev as RangeCustomEvent).detail.value as rValue;
-    this.lowerYears = this.lastEmittedValue.lower;
-    this.upperYears = this.lastEmittedValue.upper;
+  onIonChange(e) {
+    this.lowerYears = e.detail.value.lower;
+    this.upperYears = e.detail.value.upper;
   }
 }
