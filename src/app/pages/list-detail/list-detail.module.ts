@@ -14,8 +14,8 @@ import { ListDetailPage } from './list-detail.page';
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
-    ListDetailPageRoutingModule
+    ListDetailPageRoutingModule,
   ],
-  declarations: [ListDetailPage]
+  declarations: [ListDetailPage],
 })
 export class ListDetailPageModule {}

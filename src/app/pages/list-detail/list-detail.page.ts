@@ -25,6 +25,7 @@ export class ListDetailPage implements OnInit {
   list = null;
   listitems = [];
   years = [];
+  search = '';
   currentPage = 1;
   ress = '';
   isFiltersModalOpen = false;
@@ -36,8 +37,19 @@ export class ListDetailPage implements OnInit {
   metascoreIcon = 'none';
   runtimeIcon = 'none';
   sort_by = 'Date Added';
-  lowerYears = null;
-  upperYears = null;
+  totalMovie = 0;
+  currentMovie: any;
+  currentActor = 'All';
+  currentDirector = 'All';
+  currentWriter = 'All';
+  currentGenre = 'All';
+  currentYears = 'All';
+  currentType = 'All';
+  yearRange: any = {
+    answer: 'answer',
+    lowerYears: null,
+    upperYears: null,
+  };
 
   lastEmittedValue: RangeValue;
 
@@ -46,28 +58,37 @@ export class ListDetailPage implements OnInit {
     private fb: FormBuilder,
     private movieService: MovieService,
     private loadingController: LoadingController
-  ) {}
-
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.movieService.getListDetails(id).subscribe((res) => {
-      this.list = res;
-      console.log('list', this.list);
-      for (var item of this.list.items) {
-        this.years.push(item.movie.year);
-      }
-      this.years.sort();
-      this.lowerYears = this.years[0];
-      this.upperYears = this.years.slice(-1);
-      this.loadList();
-    });
+  ) {
+    this.loadList();
+    this.loadListItems();
     this.credentials = this.fb.group({
       sortBy: ['-movie__added_at', Validators.required],
       loweryears: [null, Validators.required],
       upperyears: [null, Validators.required],
+      actor: [null, Validators.required],
+      director: [null, Validators.required],
+      writer: [null, Validators.required],
+      genre: [null, Validators.required],
+      type: [null, Validators.required],
     });
   }
-  async loadList(event?: InfiniteScrollCustomEvent) {
+
+  ngOnInit() {}
+  loadList() {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.movieService.getListDetails(id).subscribe((res) => {
+      this.list = res;
+      console.log('list', this.list);
+      this.totalMovie = this.list.total_movie;
+      for (var item of this.list.items) {
+        this.years.push(item.movie.year);
+      }
+      this.years.sort();
+      this.yearRange.lowerYears = this.years[0];
+      this.yearRange.upperYears = this.years.slice(-1);
+    });
+  }
+  async loadListItems() {
     const id = this.route.snapshot.paramMap.get('id');
     const loading = await this.loadingController.create({
       message: 'Loading..',
@@ -75,13 +96,22 @@ export class ListDetailPage implements OnInit {
     });
     await loading.present();
     this.movieService
-      .getListItemDetails(id, this.currentPage, this.credentials.value)
+      .getListItemDetails(
+        id,
+        this.currentPage,
+        this.credentials.value,
+        this.search
+      )
       .subscribe({
         next: async (res) => {
           await loading.dismiss();
           this.ress = res.next;
           this.listitems.push(...res.results);
-          console.log('listitems: ', res);
+          if (this.totalMovie === res.count) {
+            this.currentMovie = res.count;
+          } else
+            this.currentMovie = res.count + ' (of ' + this.totalMovie + ')';
+          console.log('listitems: ', this.listitems);
         },
         error: async (error) => {
           await loading.dismiss();
@@ -95,7 +125,7 @@ export class ListDetailPage implements OnInit {
       if (this.ress === null) {
         event.target.disabled = true;
       } else {
-        this.loadList();
+        this.loadListItems();
       }
     });
   }
@@ -104,7 +134,11 @@ export class ListDetailPage implements OnInit {
     this.listitems = [];
     this.currentPage = 1;
     this.infiniteScroll.disabled = false;
-    this.loadList();
+    this.loadListItems();
+  }
+  searchBar(event) {
+    this.search = event.detail.value.toLowerCase();
+    this.refresh();
   }
   changeSortdir(i) {
     if (i === this.credentials.value.sortBy) {
@@ -160,26 +194,32 @@ export class ListDetailPage implements OnInit {
     this.isFiltersModalOpen = isOpen;
   }
   refine() {
-    if (
-      this.credentials.value.sortBy === 'movie__title' ||
-      this.credentials.value.sortBy === 'movie__runtime'
-    ) {
-      if (this.iconName === 'arrow-up-outline') {
+    if (this.credentials.value.sortBy[0] !== '-') {
+      if (
+        this.credentials.value.sortBy === 'movie__title' ||
+        this.credentials.value.sortBy === 'movie__runtime'
+      ) {
+        if (this.iconName === 'arrow-up-outline') {
+          this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
+        }
+      } else if (this.iconName === 'arrow-down-outline') {
         this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
       }
-    } else if (this.iconName === 'arrow-down-outline') {
-      this.credentials.value.sortBy = '-' + this.credentials.value.sortBy;
     }
-    console.log(this.credentials.value.sortBy);
     this.refresh();
   }
   resetFilters() {
-    this.lowerYears = this.years[0];
-    this.upperYears = this.years.slice(-1);
+    this.yearRange.lowerYears = this.years[0];
+    this.yearRange.upperYears = this.years.slice(-1);
     this.credentials = this.fb.group({
-      sortBy: ['-movie__added_at', Validators.required],
+      sortBy: ['movie__added_at', Validators.required],
       loweryears: [null, Validators.required],
       upperyears: [null, Validators.required],
+      actor: [null, Validators.required],
+      director: [null, Validators.required],
+      writer: [null, Validators.required],
+      genre: [null, Validators.required],
+      type: [null, Validators.required],
     });
     this.sort_by = 'Date Added';
     this.iconName = 'arrow-down-outline';
@@ -189,9 +229,30 @@ export class ListDetailPage implements OnInit {
     this.imdbratingIcon = 'none';
     this.metascoreIcon = 'none';
     this.runtimeIcon = 'none';
+    this.currentYears = 'All';
   }
   onIonChange(e) {
-    this.lowerYears = e.detail.value.lower;
-    this.upperYears = e.detail.value.upper;
+    this.currentYears = e.detail.value.lower + '-' + e.detail.value.upper;
+    this.yearRange.lowerYears = e.detail.value.lower;
+    this.yearRange.upperYears = e.detail.value.upper;
+  }
+  actorHandel(event) {
+    this.currentActor = event.detail.value == '' ? 'All' : event.detail.value;
+  }
+  directorHandel(event) {
+    this.currentDirector =
+      event.detail.value == '' ? 'All' : event.detail.value;
+  }
+  writerHandel(event) {
+    this.currentWriter = event.detail.value == '' ? 'All' : event.detail.value;
+  }
+  genreHandel(event) {
+    this.currentGenre = event.detail.value == '' ? 'All' : event.detail.value;
+  }
+  typeHandel(event) {
+    this.currentType =
+      event.detail.value == '' || event.detail.value == null
+        ? 'All'
+        : event.detail.value;
   }
 }

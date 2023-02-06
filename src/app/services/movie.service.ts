@@ -6,47 +6,44 @@ import { Preferences } from '@capacitor/preferences';
 import { ApiService } from './api.service';
 
 declare module namespace2 {
-
   export interface Movie {
-      id: number;
-      title: string;
-      year: string;
-      actors: string[];
-      director: string[];
-      writer: string[];
-      orginal_title?: any;
-      rated: string;
-      released: string;
-      runtime: string;
-      genre: string[];
-      plot: string;
-      language: string;
-      country: string;
-      awards: string;
-      poster: string;
-      metascore: string;
-      imdbrating: number;
-      imdbid: string;
-      type: string;
-      added_at: Date;
+    id: number;
+    title: string;
+    year: string;
+    actors: string[];
+    director: string[];
+    writer: string[];
+    orginal_title?: any;
+    rated: string;
+    released: string;
+    runtime: string;
+    genre: string[];
+    plot: string;
+    language: string;
+    country: string;
+    awards: string;
+    poster: string;
+    metascore: string;
+    imdbrating: number;
+    imdbid: string;
+    type: string;
+    added_at: Date;
   }
 
   export interface Item {
-      movie: Movie;
+    movie: Movie;
   }
 
   export interface RootObject {
-      id: string;
-      profile: number;
-      name: string;
-      description?: any;
-      created_at: Date;
-      items: Item[];
-      total_movie: number;
+    id: string;
+    profile: number;
+    name: string;
+    description?: any;
+    created_at: Date;
+    items: Item[];
+    total_movie: number;
   }
-
 }
-
 
 declare module namespace1 {
   export interface Search {
@@ -118,16 +115,20 @@ export class MovieService {
     return this.http.get(url);
   }
 
-  getListDetails(id: string):Observable<namespace2.RootObject> {
+  getListDetails(id: string): Observable<namespace2.RootObject> {
     const url = this.url + `/storage/lists/${id}/`;
     return this.http.get<namespace2.RootObject>(url);
   }
   getListItemDetails(
     id: string,
     page = 1,
-    credentials
+    credentials,
+    search
   ): Observable<namespace.RootObject> {
     let url = this.url + `/storage/lists/${id}/items/?page=${page}`;
+    if (search !== '') {
+      url += `&search=${search}`;
+    }
     if (credentials.sortBy !== null) {
       url += `&ordering=${credentials.sortBy}`;
     }
@@ -137,18 +138,21 @@ export class MovieService {
     if (credentials.upperyears !== null) {
       url += `&movie__year__lte=${credentials.upperyears}`;
     }
-    // if (credentials.actor !== null) {
-    //   url += `&movie__actors__full_name=${credentials.actor}`;
-    // }
-    // if (credentials.director !== null) {
-    //   url += `&movie__director__full_name=${credentials.director}`;
-    // }
-    // if (credentials.writer !== null) {
-    //   url += `movie__writer__full_name=${credentials.writer}`;
-    // }
-    // if (credentials.search !== null) {
-    //   url += `&search=${credentials.search}`;
-    // }
+    if (credentials.actor !== null) {
+      url += `&movie__actors__full_name=${credentials.actor}`;
+    }
+    if (credentials.director !== null) {
+      url += `&movie__director__full_name=${credentials.director}`;
+    }
+    if (credentials.writer !== null) {
+      url += `&movie__writer__full_name=${credentials.writer}`;
+    }
+    if (credentials.genre !== null) {
+      url += `&movie__genre__name=${credentials.genre}`;
+    }
+    if (credentials.type !== null) {
+      url += `&movie__type=${credentials.type}`;
+    }
     return this.http.get<namespace.RootObject>(url);
   }
   deleteList(id: string) {
