@@ -32,9 +32,7 @@ export class TabListPage implements OnInit {
     private actionSheetCtrl: ActionSheetController,
     private loadingController: LoadingController,
     private alertController: AlertController
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.allMovie();
     this.credentials = this.fb.group({
       sortBy: ['-created_at', Validators.required],
@@ -44,6 +42,8 @@ export class TabListPage implements OnInit {
       description: [''],
     });
   }
+
+  ngOnInit() {}
 
   async allMovie() {
     const loading = await this.loadingController.create({

@@ -155,16 +155,22 @@ export class MovieService {
     }
     return this.http.get<namespace.RootObject>(url);
   }
-  deleteList(id: string) {
-    const url = this.url + `/storage/lists/${id}/`;
-    return this.http.delete(url);
-  }
   getMovieDetails(id: string): Observable<namespace.RootObject> {
     const url = this.url + `/storage/movies/${id}/`;
     return this.http.get<namespace.RootObject>(url);
   }
   createNweList(credentials: { name; description }) {
     return this.http.post(`${this.url}/storage/lists/`, credentials);
+  }
+  editList(credentials: { id; name; description }) {
+    return this.http.patch(
+      `${this.url}/storage/lists/${credentials.id}/`,
+      credentials
+    );
+  }
+  deleteList(id: string) {
+    const url = this.url + `/storage/lists/${id}/`;
+    return this.http.delete(url);
   }
   getAllMovie(page = 1): Observable<namespace.RootObject> {
     let url = this.url + `/storage/movies/?page=${page}`;

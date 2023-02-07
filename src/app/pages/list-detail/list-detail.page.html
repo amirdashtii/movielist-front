@@ -4,7 +4,12 @@
       <ion-back-button defaultHref="/tabs/tab-list"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ list?.name }} </ion-title>
-    <ion-icon size="large" slot="end" name="create-outline"></ion-icon>
+    <ion-icon
+      size="large"
+      slot="end"
+      name="create-outline"
+      (click)="setOpenEdit(true)"
+    ></ion-icon>
   </ion-toolbar>
 </ion-header>
 
@@ -72,6 +77,47 @@
     ></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
+
+<ion-modal [isOpen]="isEditModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="setOpenEdit(false)">Cancel</ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+          <ion-button
+            type="submit"
+            [disabled]="!testimonial.valid"
+            (click)="save()"
+            (click)="setOpenEdit(false)"
+            >Save</ion-button
+          >
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <form (ngSubmit)="save()" [formGroup]="testimonial">
+        <ion-item>
+          <ion-label position="stacked" color="primary">Title</ion-label>
+          <ion-input
+            type="text"
+            placeholder="New list title..."
+            formControlName="name"
+          ></ion-input>
+          <ion-label position="stacked" color="primary"
+            >List Description</ion-label
+          >
+          <ion-input
+            type="text"
+            formControlName="description"
+            placeholder="New list description..."
+          ></ion-input>
+        </ion-item>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 <ion-modal [isOpen]="isFiltersModalOpen">
   <ng-template>

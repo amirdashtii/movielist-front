@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  AlertController,
   InfiniteScrollCustomEvent,
   IonInfiniteScroll,
   LoadingController,
@@ -22,6 +23,7 @@ export interface rValue {
 export class ListDetailPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   credentials: FormGroup;
+  testimonial: FormGroup;
   list = null;
   listitems = [];
   years = [];
@@ -29,6 +31,7 @@ export class ListDetailPage implements OnInit {
   currentPage = 1;
   ress = '';
   isFiltersModalOpen = false;
+  isEditModalOpen = false;
   iconName = 'arrow-down-outline';
   dateAddedIcon = this.iconName;
   titleIcon = 'none';
@@ -57,7 +60,8 @@ export class ListDetailPage implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private movieService: MovieService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private alertController: AlertController
   ) {
     this.loadList();
     this.loadListItems();
@@ -80,6 +84,12 @@ export class ListDetailPage implements OnInit {
       this.list = res;
       console.log('list', this.list);
       this.totalMovie = this.list.total_movie;
+      this.testimonial = this.fb.group({
+        name: [this.list.name, Validators.required],
+        description: [this.list.description],
+        id: [this.list.id],
+      });
+
       for (var item of this.list.items) {
         this.years.push(item.movie.year);
       }
@@ -190,6 +200,32 @@ export class ListDetailPage implements OnInit {
     }
   }
 
+  setOpenEdit(isOpen: boolean) {
+    this.isEditModalOpen = isOpen;
+  }
+  async save() {
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
+    await loading.present();
+
+    this.movieService.editList(this.testimonial.value).subscribe({
+      next: async (_) => {
+        await loading.dismiss();
+        this.loadList();
+      },
+      error: async (res) => {
+        await loading.dismiss();
+        const alert = await this.alertController.create({
+          header: 'fail',
+          message: res.error.msg,
+          buttons: ['OK'],
+        });
+        await alert.present();
+      },
+    });
+  }
   setOpenFilters(isOpen: boolean) {
     this.isFiltersModalOpen = isOpen;
   }
