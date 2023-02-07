@@ -57,14 +57,6 @@ const routes: Routes = [
         canLoad: [AuthGuard],
       },
       {
-        path: 'tab-add-movie',
-        loadChildren: () =>
-          import('../tab-add-movie/tab-add-movie.module').then(
-            (m) => m.TAbAddMoviePageModule
-          ),
-        canLoad: [AuthGuard],
-      },
-      {
         path: '',
         redirectTo: '/tabs/tab-home',
         pathMatch: 'full',

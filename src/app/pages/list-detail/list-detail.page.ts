@@ -24,14 +24,18 @@ export class ListDetailPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   credentials: FormGroup;
   testimonial: FormGroup;
+  body: FormGroup;
   list = null;
   listitems = [];
+  moviesList = [];
   years = [];
   search = '';
   currentPage = 1;
+  page = 1;
   ress = '';
   isFiltersModalOpen = false;
   isEditModalOpen = false;
+  isAddMovieModalOpen = false;
   iconName = 'arrow-down-outline';
   dateAddedIcon = this.iconName;
   titleIcon = 'none';
@@ -229,6 +233,9 @@ export class ListDetailPage implements OnInit {
   setOpenFilters(isOpen: boolean) {
     this.isFiltersModalOpen = isOpen;
   }
+  setOpenAddMovie(isOpen: boolean) {
+    this.isAddMovieModalOpen = isOpen;
+  }
   refine() {
     if (this.credentials.value.sortBy[0] !== '-') {
       if (
@@ -290,5 +297,64 @@ export class ListDetailPage implements OnInit {
       event.detail.value == '' || event.detail.value == null
         ? 'All'
         : event.detail.value;
+  }
+  searchMoveBar(ev) {
+      this.body = this.fb.group({
+        title: [ev.detail.value],
+        page: this.page
+      });
+      console.log(this.body)
+      this.moviesList = [];
+      this.searchMovie()
+    }
+    async searchMovie() {
+      const loading = await this.loadingController.create({
+          message: 'Loading..',
+          spinner: 'bubbles',
+        });
+        await loading.present();
+    this.movieService.searchMovie(this.body.value).subscribe({
+      next: async (v) => {
+        await loading.dismiss();
+        if (v.Response === 'False') {
+          console.log(v['Error']);
+        } else {
+          this.moviesList.push(...v.Search);
+          console.log(this.moviesList);
+        }
+      },
+      error: async (error) => {
+        await loading.dismiss();
+      },
+    });
+    
+  }
+  async addMovieToList(imdbID) {
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
+    await loading.present();
+    const body = { imdbid: imdbID, list_id: this.list.id};
+    this.movieService.addMovieToList(body).subscribe({
+      next: async (v) => {
+        await loading.dismiss();
+        this.refresh();
+      },
+      error: async (error) => {
+        await loading.dismiss();
+      },
+    });
+  }
+  loadMoreSearch(event: any) {
+    setTimeout(() => {
+      this.page++;
+      event.target.complete();
+      if (this.ress === null) {
+        event.target.disabled = true;
+      } else {
+        this.searchMovie();
+      }
+    });
   }
 }

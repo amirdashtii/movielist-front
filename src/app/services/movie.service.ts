@@ -176,17 +176,17 @@ export class MovieService {
     let url = this.url + `/storage/movies/?page=${page}`;
     return this.http.get<namespace.RootObject>(url);
   }
-  TabAddMovie(credentials: { title; year }) {
+  searchMovie(testimonial: { title }) {
     return this.http.post<namespace1.RootObject>(
       `${this.url}/storage/search-movie/`,
-      credentials
+      testimonial
     );
   }
-  addMovieToList(ev: { imdbid; list_id }): Observable<any> {
-    return this.http.post(`${this.url}/storage/add-movie/`, ev).pipe(
+  addMovieToList(body: { imdbid; list_id }): Observable<any> {
+    return this.http.post(`${this.url}/storage/add-movie/`, body).pipe(
       switchMap((movie_id: { movei_id }) => {
         return this.http.post(
-          `${this.url}/storage/lists/${ev.list_id}/items/`,
+          `${this.url}/storage/lists/${body.list_id}/items/`,
           movie_id
         );
       })
