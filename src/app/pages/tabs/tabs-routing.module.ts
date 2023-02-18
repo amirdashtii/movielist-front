@@ -17,22 +17,6 @@ const routes: Routes = [
         canLoad: [AuthGuard],
       },
       {
-        path: 'tab-list/:id',
-        loadChildren: () =>
-          import('../list-detail/list-detail.module').then(
-            (m) => m.ListDetailPageModule
-          ),
-        canLoad: [AuthGuard],
-      },
-      {
-        path: 'tab-home/:id/items/:id',
-        loadChildren: () =>
-          import('../movie-detail/movie-detail.module').then(
-            (m) => m.MovieDetailPageModule
-          ),
-        canLoad: [AuthGuard],
-      },
-      {
         path: 'tab-list',
         loadChildren: () =>
           import('../tab-list/tab-list.module').then(
@@ -42,6 +26,14 @@ const routes: Routes = [
       },
       {
         path: 'tab-list/:id',
+        loadChildren: () =>
+          import('../list-detail/list-detail.module').then(
+            (m) => m.ListDetailPageModule
+          ),
+        canLoad: [AuthGuard],
+      },
+      {
+        path: 'tab-list/:id/items/:id',
         loadChildren: () =>
           import('../movie-detail/movie-detail.module').then(
             (m) => m.MovieDetailPageModule

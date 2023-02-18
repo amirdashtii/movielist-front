@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>{{ movie?.title }}</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tab-home"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/tab-list"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -16,7 +16,6 @@
         {{ movie.title }}
         <ion-label> ({{ movie.year }})</ion-label>
       </ion-card-title>
-      <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
 
       <ion-label>
         <h3>
@@ -26,7 +25,6 @@
           <ion-label> {{ movie.runtime }} </ion-label>
           <ion-icon name="calendar-outline"></ion-icon>
           <ion-label>{{ movie.released }}</ion-label>
-          <!--| date:'y'-->
         </h3>
       </ion-label>
       <ion-label>
@@ -48,8 +46,6 @@
     </ion-card-header>
 
     <ion-card-content>
-      <!-- <ion-item lines="none"> -->
-      <!-- </ion-item> -->
       <ion-label color="medium">{{ movie.plot }}</ion-label>
     </ion-card-content>
   </ion-card>

@@ -24,14 +24,13 @@ export class ListDetailPage implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   credentials: FormGroup;
   testimonial: FormGroup;
-  body: FormGroup;
+  // body: FormGroup;
   list = null;
   listitems = [];
   moviesList = [];
   years = [];
   search = '';
   currentPage = 1;
-  page = 1;
   ress = '';
   isFiltersModalOpen = false;
   isEditModalOpen = false;
@@ -52,10 +51,15 @@ export class ListDetailPage implements OnInit {
   currentGenre = 'All';
   currentYears = 'All';
   currentType = 'All';
+  t= false  ;
   yearRange: any = {
     answer: 'answer',
     lowerYears: null,
     upperYears: null,
+  };
+  body: any = {
+    title: null,
+    page: 1,
   };
 
   lastEmittedValue: RangeValue;
@@ -299,35 +303,34 @@ export class ListDetailPage implements OnInit {
         : event.detail.value;
   }
   searchMoveBar(ev) {
-      this.body = this.fb.group({
-        title: [ev.detail.value],
-        page: this.page
-      });
-      console.log(this.body)
-      this.moviesList = [];
-      this.searchMovie()
-    }
-    async searchMovie() {
-      const loading = await this.loadingController.create({
-          message: 'Loading..',
-          spinner: 'bubbles',
-        });
-        await loading.present();
-    this.movieService.searchMovie(this.body.value).subscribe({
+    this.body.title = ev.detail.value;
+    this.body.page = 1
+    console.log(this.body);
+    this.moviesList = [];
+    this.searchMovie();
+  }
+  async searchMovie() {
+    const loading = await this.loadingController.create({
+      message: 'Loading..',
+      spinner: 'bubbles',
+    });
+    await loading.present();
+    this.movieService.searchMovie(this.body).subscribe({
       next: async (v) => {
         await loading.dismiss();
         if (v.Response === 'False') {
           console.log(v['Error']);
         } else {
+          if (Number(v.totalResults)/(this.body.page*10)<1) {this.t = true}
+
           this.moviesList.push(...v.Search);
-          console.log(this.moviesList);
+          console.log(v);
         }
       },
       error: async (error) => {
         await loading.dismiss();
       },
     });
-    
   }
   async addMovieToList(imdbID) {
     const loading = await this.loadingController.create({
@@ -335,8 +338,8 @@ export class ListDetailPage implements OnInit {
       spinner: 'bubbles',
     });
     await loading.present();
-    const body = { imdbid: imdbID, list_id: this.list.id};
-    this.movieService.addMovieToList(body).subscribe({
+    const thisBody = { imdbid: imdbID, list_id: this.list.id };
+    this.movieService.addMovieToList(thisBody).subscribe({
       next: async (v) => {
         await loading.dismiss();
         this.refresh();
@@ -348,9 +351,9 @@ export class ListDetailPage implements OnInit {
   }
   loadMoreSearch(event: any) {
     setTimeout(() => {
-      this.page++;
+      this.body.page++;
       event.target.complete();
-      if (this.ress === null) {
+      if (this.t) {
         event.target.disabled = true;
       } else {
         this.searchMovie();
