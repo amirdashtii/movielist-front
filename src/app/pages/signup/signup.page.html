@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button default-href="#"></ion-back-button>
+      <ion-back-button defaultHref="/login"></ion-back-button>
     </ion-buttons>
     <ion-title>Movie List</ion-title>
   </ion-toolbar>
@@ -20,6 +20,8 @@
               <ion-input
                 placeholder="Username"
                 formControlName="username"
+                autocomplete="username"
+                autofocus="true"
               ></ion-input>
             </ion-item>
             <ion-item>
@@ -27,6 +29,8 @@
                 type="'email"
                 placeholder="Email"
                 formControlName="email"
+                autocomplete="email"
+                required="true"
               ></ion-input>
             </ion-item>
             <ion-item>

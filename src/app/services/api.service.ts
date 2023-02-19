@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { Preferences } from '@capacitor/preferences'; // import { Plugins } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
-// const { Storage } = Plugins;
 
 const ACCESS_TOKEN_KEY = 'my-access-token';
 const REFRESH_TOKEN_KEY = 'my-refresh-token';
@@ -131,9 +130,11 @@ export class ApiService {
               'Content-Type': 'application/json',
             }),
           };
+          const body = { refresh: token.value };
+          console.log(token);
           return this.http.post(
             `${this.url}/auth/jwt/refresh/`,
-            refresh,
+            body,
             httpOptions
           );
         } else {
